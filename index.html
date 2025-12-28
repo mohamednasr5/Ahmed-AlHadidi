@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://www.gstatic.com https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
+        font-src 'self' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
+        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com;
+        img-src 'self' data: https:;
+    ">
     <title>لوحة التحكم - مكتب النائب أحمد الحديدي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -307,7 +315,6 @@
             margin-right: 10px;
         }
 
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -343,7 +350,6 @@
             100% { box-shadow: 0 0 0 0 rgba(26, 42, 108, 0); }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -380,7 +386,7 @@
             <div class="form-group">
                 <input type="password" id="adminPass" placeholder="أدخل كلمة السر" autocomplete="off">
             </div>
-            <button class="btn" onclick="login()" id="loginBtn">
+            <button class="btn" id="loginBtn">
                 <span id="loginText">دخول</span>
                 <span id="loginSpinner" style="display:none;"><span class="loading"></span> جاري التحقق...</span>
             </button>
@@ -409,7 +415,7 @@
                 <div id="membersList"></div>
             </div>
             
-            <button class="btn btn-secondary" onclick="logout()" style="margin-top: 20px;">
+            <button class="btn btn-secondary" id="logoutBtn" style="margin-top: 20px;">
                 <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
             </button>
         </div>
@@ -449,7 +455,6 @@
             titleEl.textContent = title;
             messageEl.textContent = message;
             
-            // تغيير الأيقونة بناءً على نوع الإشعار
             if (type === 'error') {
                 icon.className = 'fas fa-exclamation-circle';
                 icon.style.color = '#b21f1f';
@@ -460,13 +465,12 @@
             
             notification.classList.remove('hidden');
             
-            // إخفاء الإشعار تلقائياً بعد 5 ثواني
             setTimeout(() => {
                 notification.classList.add('hidden');
             }, 5000);
         }
 
-        window.login = async () => {
+        async function login() {
             const password = document.getElementById('adminPass').value;
             const loginBtn = document.getElementById('loginBtn');
             const loginText = document.getElementById('loginText');
@@ -478,12 +482,10 @@
                 return;
             }
             
-            // إظهار حالة التحميل
             loginText.style.display = 'none';
             loginSpinner.style.display = 'inline';
             loginBtn.disabled = true;
             
-            // محاكاة التأخير للتحقق
             await new Promise(resolve => setTimeout(resolve, 800));
             
             if(password === '742018') {
@@ -497,20 +499,19 @@
                 document.getElementById('adminPass').focus();
             }
             
-            // إعادة تعيين حالة الزر
             loginText.style.display = 'inline';
             loginSpinner.style.display = 'none';
             loginBtn.disabled = false;
-        };
+        }
 
-        window.logout = () => {
+        function logout() {
             document.getElementById('admin-section').style.display = 'none';
             document.getElementById('login-section').style.display = 'block';
             document.getElementById('adminPass').value = '';
             showNotification('تم الخروج', 'تم تسجيل الخروج بنجاح');
-        };
+        }
 
-        document.getElementById('addBtn').onclick = async () => {
+        async function addMember() {
             const name = document.getElementById('name').value.trim();
             const nid = document.getElementById('nationalId').value.trim();
             const addr = document.getElementById('address').value.trim();
@@ -523,7 +524,6 @@
                 return;
             }
             
-            // إظهار حالة التحميل
             addText.style.display = 'none';
             addSpinner.style.display = 'inline';
             addBtn.disabled = true;
@@ -538,23 +538,20 @@
                 
                 showNotification('تم الحفظ بنجاح', 'تم إضافة العضو بنجاح وتوليد الرابط');
                 
-                // تفريغ الحقول
                 document.getElementById('name').value = '';
                 document.getElementById('nationalId').value = '';
                 document.getElementById('address').value = '';
                 
-                // إعادة تحميل قائمة الأعضاء
                 await loadMembers();
             } catch (error) {
                 console.error("Error adding document: ", error);
                 showNotification('خطأ في الحفظ', 'حدث خطأ أثناء حفظ البيانات', 'error');
             } finally {
-                // إعادة تعيين حالة الزر
                 addText.style.display = 'inline';
                 addSpinner.style.display = 'none';
                 addBtn.disabled = false;
             }
-        };
+        }
 
         async function loadMembers() {
             try {
@@ -574,20 +571,17 @@
                 
                 list.innerHTML = '';
                 
-                // تحويل النتائج إلى مصفوفة وترتيبها تنازلياً حسب التاريخ
                 const members = [];
                 querySnapshot.forEach((doc) => {
                     members.push({ id: doc.id, data: doc.data() });
                 });
                 
-                // ترتيب حسب التاريخ (الأحدث أولاً)
                 members.sort((a, b) => {
                     const dateA = a.data.createdAt || '';
                     const dateB = b.data.createdAt || '';
                     return dateB.localeCompare(dateA);
                 });
                 
-                // عرض الأعضاء
                 members.forEach((member, index) => {
                     const link = `https://mohamednasr5.github.io/Ahmed-Al-Hadidi/verify.html?id=${member.id}`;
                     const memberCard = document.createElement('div');
@@ -617,25 +611,29 @@
             }
         }
 
-        // إضافة مستمعات الأحداث لجعل النموذج يعمل عند الضغط على Enter
-        document.getElementById('adminPass').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') login();
-        });
-        
-        document.getElementById('name').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('nationalId').focus();
-        });
-        
-        document.getElementById('nationalId').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('address').focus();
-        });
-        
-        document.getElementById('address').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('addBtn').click();
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loginBtn').addEventListener('click', login);
+            
+            document.getElementById('adminPass').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') login();
+            });
+            
+            document.getElementById('addBtn').addEventListener('click', addMember);
+            
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            
+            document.getElementById('name').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('nationalId').focus();
+            });
+            
+            document.getElementById('nationalId').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('address').focus();
+            });
+            
+            document.getElementById('address').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addMember();
+            });
 
-        // إضافة تأثير للتركيز على أول حقل عند تحميل الصفحة
-        window.addEventListener('load', () => {
             document.getElementById('adminPass').focus();
         });
     </script>
