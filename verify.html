@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تأكيد العضوية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0c0c0c; color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .success-box { background: #27ae60; color: white; padding: 15px; border-radius: 8px; margin: 20px 0; width: 90%; max-width: 450px; text-align: center; font-size: 1.1rem; font-weight: bold; border-right: 5px solid #1e8449; }
+        .data-card { background: #1a1a1a; border: 1px solid #d4af37; padding: 20px; border-radius: 12px; width: 90%; max-width: 450px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); }
+        .row { margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 8px; display: flex; justify-content: space-between; }
+        .label { color: #d4af37; font-weight: bold; }
+        .warning { margin-top: 25px; background: #fff; color: #b21f1f; padding: 15px; border-radius: 10px; font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; font-weight: bold; }
+        .call-icon { background: #27ae60; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 20px; }
+        #loader { margin-top: 50px; font-size: 1.2rem; color: #d4af37; }
+    </style>
+</head>
+<body>
+    <div id="loader">جاري فحص البيانات...</div>
+
+    <div id="result" style="display:none; width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div class="success-box">تم التأكد من الشخصية بنجاح وهو عضو المكتب الخدمى للنائب أحمد الحديدي بالفعل</div>
+        
+        <div class="data-card">
+            <div class="row"><span class="label">الاسم:</span> <span id="res-name"></span></div>
+            <div class="row"><span class="label">الرقم القومي:</span> <span id="res-id"></span></div>
+            <div class="row"><span class="label">محل الإقامة:</span> <span id="res-addr"></span></div>
+        </div>
+
+        <div class="warning">
+            <span style="flex: 1;">في حالة مخالفة الشخص لأي من القواعد أو القوانين يرجى التواصل مباشر مع النائب أحمد الحديدي على الرقم 01000006622</span>
+            <a href="tel:01000006622" class="call-icon"><i class="fas fa-phone-alt"></i></a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs",
+          authDomain: "verify-39eda.firebaseapp.com",
+          projectId: "verify-39eda",
+          storageBucket: "verify-39eda.firebasestorage.app",
+          messagingSenderId: "36549490854",
+          appId: "1:36549490854:web:79b4ab27672d54b005dc67",
+          measurementId: "G-4JD68W8959"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+
+        if(id) {
+            getDoc(doc(db, "members", id)).then((snap) => {
+                if(snap.exists()) {
+                    document.getElementById('res-name').innerText = snap.data().name;
+                    document.getElementById('res-id').innerText = snap.data().nationalId;
+                    document.getElementById('res-addr').innerText = snap.data().address;
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('result').style.display = 'flex';
+                } else {
+                    document.getElementById('loader').innerText = "عذراً، هذا العضو غير موجود بالقاعدة";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
