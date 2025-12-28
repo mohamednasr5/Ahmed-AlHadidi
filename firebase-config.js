@@ -9,6 +9,10 @@ const firebaseConfig = {
 };
 
 // تهيئة Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+// تصدير كائنات Firebase
+window.db = firebase.firestore();
+window.auth = firebase.auth();
