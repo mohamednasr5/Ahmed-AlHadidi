@@ -5,296 +5,596 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com;
-        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
-        font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
-        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.firebase.com;
+        script-src 'self' https://www.gstatic.com https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
+        font-src 'self' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
+        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com;
         img-src 'self' data: https:;
     ">
-    <title>لوحة التحكم - مكتب النائب أحمد الحديدي</title>
+    <title>تأكيد العضوية - مكتب النائب أحمد الحديدي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #1a2a6c;
             --secondary: #b21f1f;
             --accent: #27ae60;
+            --gold: #d4af37;
+            --dark: #0a0a0a;
+            --dark-card: #1a1a1a;
             --light: #f8f9fa;
-            --dark: #343a40;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
             --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --gradient: linear-gradient(135deg, #1a2a6c 0%, #2a3a8c 50%, #1a2a6c 100%);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Cairo', Tahoma, sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Cairo', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            background: var(--dark);
+            color: white;
             min-height: 100vh;
             padding: 20px;
-            color: var(--dark);
-            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(26, 42, 108, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(178, 31, 31, 0.1) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
         }
 
         .header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(to right, var(--primary), #2a3a8c);
-            color: white;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
+            max-width: 500px;
             animation: fadeInDown 0.8s ease-out;
         }
 
-        .container { max-width: 900px; margin: 0 auto; }
-
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-            transition: var(--transition);
-            border-top: 5px solid var(--primary);
-        }
-
-        .form-group { margin-bottom: 20px; text-align: right; }
-        
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid var(--light-gray);
-            border-radius: 10px;
-            font-size: 16px;
-            transition: var(--transition);
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.1);
-        }
-
-        .btn {
-            padding: 15px 30px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: var(--transition);
-        }
-
-        .btn:hover { transform: translateY(-3px); opacity: 0.9; }
-
-        .member-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
+        .logo {
+            font-size: 4rem;
             margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            border-right: 5px solid var(--accent);
-            position: relative;
+            color: var(--gold);
+            animation: pulse 2s infinite;
         }
 
-        .link-display {
-            color: var(--accent);
-            word-break: break-all;
-            font-size: 13px;
-            background: #f0fdf4;
-            padding: 12px;
-            border-radius: 8px;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--gold), #f4d03f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, var(--accent), #2ecc71);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+            animation: slideInUp 0.6s ease-out 0.3s both;
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid #1e8449;
+        }
+
+        .success-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .data-card {
+            background: var(--dark-card);
+            border: 2px solid var(--gold);
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            animation: slideInUp 0.6s ease-out 0.5s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .data-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to left, var(--primary), var(--gold), var(--secondary));
+        }
+
+        .row {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            padding-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
-            border: 1px dashed #27ae60;
-        }
-
-        .copy-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: white;
-            padding: 15px 25px;
+            border-bottom: 1px solid #333;
+            transition: var(--transition);
+            padding: 15px 10px;
             border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            display: none;
-            border-right: 5px solid var(--accent);
-            animation: slideIn 0.5s ease;
         }
 
-        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-        .loading { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-left: 10px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .row:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(-5px);
+        }
+
+        .row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .label {
+            color: var(--gold);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .label i {
+            font-size: 1.3rem;
+        }
+
+        .value {
+            text-align: left;
+            font-weight: 500;
+            color: #f0f0f0;
+            max-width: 60%;
+            word-break: break-word;
+        }
+
+        .warning {
+            margin-top: 30px;
+            background: linear-gradient(135deg, #fff, #f9f9f9);
+            color: var(--secondary);
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            width: 100%;
+            max-width: 500px;
+            animation: slideInUp 0.6s ease-out 0.7s both;
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+            border-right: 5px solid var(--secondary);
+        }
+
+        .warning-text {
+            flex: 1;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+
+        .call-icon {
+            background: linear-gradient(135deg, var(--secondary), #c92f2f);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 24px;
+            box-shadow: 0 5px 15px rgba(178, 31, 31, 0.3);
+            transition: var(--transition);
+            flex-shrink: 0;
+            animation: ring 2s infinite;
+        }
+
+        @keyframes ring {
+            0%, 100% { transform: rotate(0); }
+            5%, 15% { transform: rotate(-15deg); }
+            10%, 20% { transform: rotate(15deg); }
+        }
+
+        .call-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 20px rgba(178, 31, 31, 0.5);
+        }
+
+        #loader {
+            margin: 50px 0;
+            font-size: 1.3rem;
+            color: var(--gold);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .loader-spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(212, 175, 55, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            margin-bottom: 20px;
+            animation: spin 1.2s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stamp {
+            position: absolute;
+            bottom: -15px;
+            left: -15px;
+            background: var(--primary);
+            color: var(--gold);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transform: rotate(-15deg);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--gold);
+            opacity: 0.9;
+            z-index: 1;
+            animation: stampIn 0.8s ease-out 1s both;
+        }
+
+        @keyframes stampIn {
+            from { transform: scale(0) rotate(-45deg); opacity: 0; }
+            to { transform: scale(1) rotate(-15deg); opacity: 0.9; }
+        }
+
+        .badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: var(--secondary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            animation: badgeIn 0.6s ease-out 0.9s both;
+        }
+
+        @keyframes badgeIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #777;
+            font-size: 0.9rem;
+            max-width: 500px;
+            animation: fadeIn 1s ease-out 1.2s both;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+            width: 100%;
+        }
+
+        .verification-id {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #aaa;
+            direction: ltr;
+            text-align: center;
+            word-break: break-all;
+            font-family: monospace;
+        }
+
+        .error-message {
+            background: rgba(178, 31, 31, 0.1);
+            border: 1px solid var(--secondary);
+            color: #ff9999;
+            padding: 25px;
+            border-radius: 16px;
+            max-width: 500px;
+            text-align: center;
+            font-size: 1.2rem;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .logo {
+                font-size: 3rem;
+            }
+            
+            .row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .value {
+                max-width: 100%;
+                text-align: right;
+            }
+            
+            .warning {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .warning-text {
+                padding-left: 0;
+            }
+            
+            .stamp {
+                width: 80px;
+                height: 80px;
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <i class="fas fa-landmark" style="font-size: 2.5rem; margin-bottom: 10px;"></i>
-        <h1>لوحة التحكم - مكتب النائب أحمد الحديدي</h1>
-        <p>نظام إدارة الأعضاء وتوليد روابط التحقق الشخصية</p>
+        <div class="logo">
+            <i class="fas fa-landmark"></i>
+        </div>
+        <h1>تأكيد العضوية</h1>
+        <p>مكتب النائب أحمد الحديدي - التحقق من هوية الأعضاء</p>
     </div>
 
-    <div class="container">
-        <!-- قسم تسجيل الدخول -->
-        <div id="login-section" class="card">
-            <h2 style="margin-bottom: 20px;"><i class="fas fa-lock"></i> تسجيل دخول المسؤول</h2>
-            <div class="form-group">
-                <input type="password" id="adminPass" placeholder="أدخل كلمة السر (742018)" autocomplete="current-password">
+    <div id="loader">
+        <div class="loader-spinner"></div>
+        <p>جاري فحص البيانات والتحقق من العضوية...</p>
+        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">يرجى الانتظار قليلاً</p>
+    </div>
+
+    <div id="result" style="display: none; width: 100%; max-width: 500px;">
+        <div class="success-box">
+            <i class="fas fa-check-circle" style="margin-left: 10px;"></i>
+            تم التحقق من الشخصية بنجاح وهو عضو المكتب الخدمى للنائب أحمد الحديدي
+        </div>
+        
+        <div class="data-card">
+            <div class="badge">
+                <i class="fas fa-id-badge"></i> عضو معتمد
             </div>
-            <button class="btn" id="loginBtn">دخول</button>
+            
+            <div class="row">
+                <span class="label"><i class="fas fa-user"></i> الاسم:</span>
+                <span class="value" id="res-name"></span>
+            </div>
+            
+            <div class="row">
+                <span class="label"><i class="fas fa-id-card"></i> الرقم القومي:</span>
+                <span class="value" id="res-id"></span>
+            </div>
+            
+            <div class="row">
+                <span class="label"><i class="fas fa-map-marker-alt"></i> محل الإقامة:</span>
+                <span class="value" id="res-addr"></span>
+            </div>
+            
+            <div class="verification-id" id="verification-id"></div>
+            
+            <div class="stamp">
+                <div style="text-align: center; line-height: 1.2;">
+                    <i class="fas fa-stamp" style="display: block; font-size: 1.5rem; margin-bottom: 5px;"></i>
+                    معتمد
+                </div>
+            </div>
         </div>
 
-        <!-- قسم الإدارة -->
-        <div id="admin-section" class="card" style="display:none;">
-            <h2 style="margin-bottom: 20px;"><i class="fas fa-user-plus"></i> إضافة عضو جديد</h2>
-            <div class="form-group">
-                <input type="text" id="name" placeholder="الاسم الرباعي" autocomplete="name">
+        <div class="warning">
+            <div class="warning-text">
+                <i class="fas fa-exclamation-triangle" style="margin-left: 10px;"></i>
+                في حالة مخالفة الشخص لأي من القواعد أو القوانين يرجى التواصل مباشرة مع النائب أحمد الحديدي
             </div>
-            <div class="form-group">
-                <input type="text" id="nationalId" placeholder="الرقم القومي" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <input type="text" id="address" placeholder="محل الإقامة" autocomplete="street-address">
-            </div>
-            <button class="btn" id="addBtn">حفظ وتوليد الرابط</button>
-            
-            <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
-            
-            <div class="members-container">
-                <h3 style="margin-bottom: 15px;"><i class="fas fa-users"></i> الأعضاء المسجلين</h3>
-                <div id="membersList"></div>
-            </div>
-            
-            <button class="btn" id="logoutBtn" style="background: var(--secondary); margin-top: 20px;">خروج</button>
+            <a href="tel:01000006622" class="call-icon" title="اتصال فوري">
+                <i class="fas fa-phone-alt"></i>
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>هذا التأكيد صالح للعرض الرسمي فقط</p>
+            <p>© مكتب النائب أحمد الحديدي - جميع الحقوق محفوظة</p>
+            <p id="timestamp" style="margin-top: 10px; font-size: 0.8rem; color: #666;"></p>
         </div>
     </div>
 
-    <div id="notification" class="notification">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <i id="notifIcon" class="fas fa-check-circle"></i>
-            <span id="notifMessage"></span>
-        </div>
-    </div>
+    <div id="error" class="error-message" style="display: none; max-width: 500px;"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs",
-            authDomain: "verify-39eda.firebaseapp.com",
-            projectId: "verify-39eda",
-            storageBucket: "verify-39eda.firebasestorage.app",
-            messagingSenderId: "36549490854",
-            appId: "1:36549490854:web:79b4ab27672d54b005dc67"
+          apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs",
+          authDomain: "verify-39eda.firebaseapp.com",
+          projectId: "verify-39eda",
+          storageBucket: "verify-39eda.firebasestorage.app",
+          messagingSenderId: "36549490854",
+          appId: "1:36549490854:web:79b4ab27672d54b005dc67",
+          measurementId: "G-4JD68W8959"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        function toast(msg, type = 'success') {
-            const n = document.getElementById('notification');
-            const m = document.getElementById('notifMessage');
-            const i = document.getElementById('notifIcon');
-            m.innerText = msg;
-            n.style.display = 'block';
-            n.style.borderRightColor = type === 'success' ? '#27ae60' : '#b21f1f';
-            i.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle';
-            i.style.color = type === 'success' ? '#27ae60' : '#b21f1f';
-            setTimeout(() => n.style.display = 'none', 3000);
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+
+        function formatDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return now.toLocaleDateString('ar-EG', options);
         }
 
-        window.copyToClipboard = (text) => {
-            navigator.clipboard.writeText(text).then(() => toast('تم نسخ الرابط بنجاح!'));
-        };
-
-        document.getElementById('loginBtn').onclick = () => {
-            const pass = document.getElementById('adminPass').value;
-            if(pass === '742018') {
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('admin-section').style.display = 'block';
-                loadMembers();
-            } else {
-                toast('كلمة السر خاطئة', 'error');
-            }
-        };
-
-        document.getElementById('addBtn').onclick = async () => {
-            const name = document.getElementById('name').value;
-            const nid = document.getElementById('nationalId').value;
-            const addr = document.getElementById('address').value;
-
-            if(!name || !nid) return toast('يرجى إكمال البيانات الأساسية', 'error');
-
-            const btn = document.getElementById('addBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading"></span> جاري الحفظ...';
-
-            try {
-                await addDoc(collection(db, "members"), {
-                    name, nationalId: nid, address: addr, createdAt: new Date()
-                });
-                toast('تمت الإضافة بنجاح');
-                document.getElementById('name').value = '';
-                document.getElementById('nationalId').value = '';
-                document.getElementById('address').value = '';
-                loadMembers();
-            } catch (e) {
-                toast('حدث خطأ في الاتصال بالخادم', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = 'حفظ وتوليد الرابط';
-            }
-        };
-
-        async function loadMembers() {
-            const list = document.getElementById('membersList');
-            list.innerHTML = '<p style="text-align:center;">جاري تحميل البيانات...</p>';
+        function showResult(memberData) {
+            document.getElementById('loader').style.display = 'none';
             
+            document.getElementById('res-name').textContent = memberData.name || 'غير متوفر';
+            document.getElementById('res-id').textContent = memberData.nationalId || 'غير متوفر';
+            document.getElementById('res-addr').textContent = memberData.address || 'غير متوفر';
+            
+            document.getElementById('verification-id').textContent = `معرف التحقق: ${id}`;
+            
+            document.getElementById('timestamp').textContent = `تم التحقق في: ${formatDate()}`;
+            
+            document.getElementById('result').style.display = 'block';
+        }
+
+        function showError(message) {
+            document.getElementById('loader').style.display = 'none';
+            
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>
+                <h3 style="margin-bottom: 10px;">خطأ في التحقق</h3>
+                <p>${message}</p>
+                <p style="margin-top: 15px; font-size: 0.9rem; color: #cc8888;">
+                    يرجى التأكد من صحة الرابط أو التواصل مع المسؤول
+                </p>
+            `;
+            errorDiv.style.display = 'block';
+        }
+
+        function simulateLoading(delay = 1500) {
+            return new Promise(resolve => {
+                setTimeout(resolve, delay);
+            });
+        }
+
+        async function verifyMembership() {
+            if (!id) {
+                await simulateLoading(1000);
+                showError("لم يتم تقديم معرف صالح للتحقق");
+                return;
+            }
+
             try {
-                const q = query(collection(db, "members"), orderBy("createdAt", "desc"));
-                const snap = await getDocs(q);
-                list.innerHTML = '';
+                await simulateLoading();
+                
+                const docRef = doc(db, "members", id);
+                const docSnap = await getDoc(docRef);
 
-                if(snap.empty) list.innerHTML = '<p style="text-align:center; color:#999;">لا يوجد أعضاء مسجلين حالياً</p>';
-
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    const url = `https://mohamednasr5.github.io/Ahmed-Al-Hadidi/verify.html?id=${doc.id}`;
-                    list.innerHTML += `
-                        <div class="member-card">
-                            <p><strong><i class="fas fa-user"></i> الاسم:</strong> ${data.name}</p>
-                            <p><strong><i class="fas fa-id-card"></i> الرقم القومي:</strong> ${data.nationalId}</p>
-                            <div class="link-display">
-                                <span>${url}</span>
-                                <button class="copy-btn" onclick="copyToClipboard('${url}')">نسخ</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            } catch (e) {
-                list.innerHTML = '<p style="text-align:center; color:red;">فشل تحميل البيانات</p>';
+                if (docSnap.exists()) {
+                    const memberData = docSnap.data();
+                    
+                    await simulateLoading(800);
+                    
+                    showResult(memberData);
+                } else {
+                    await simulateLoading(500);
+                    showError("عذراً، هذا العضو غير موجود في قاعدة البيانات");
+                }
+            } catch (error) {
+                console.error("Error fetching member:", error);
+                showError("حدث خطأ في الاتصال بالخادم. يرجى المحاولة مرة أخرى");
             }
         }
 
-        document.getElementById('logoutBtn').onclick = () => location.reload();
+        document.addEventListener('DOMContentLoaded', function() {
+            verifyMembership();
+            
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.call-icon')) {
+                    e.target.closest('.call-icon').style.animation = 'none';
+                    setTimeout(() => {
+                        e.target.closest('.call-icon').style.animation = 'ring 2s infinite';
+                    }, 10);
+                }
+            });
+        });
     </script>
 </body>
 </html>
