@@ -3,35 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تأكيد العضوية</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>تأكيد العضوية - مكتب النائب أحمد الحديدي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0c0c0c; color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .success-box { background: #27ae60; color: white; padding: 15px; border-radius: 8px; margin: 20px 0; width: 90%; max-width: 450px; text-align: center; font-size: 1.1rem; font-weight: bold; border-right: 5px solid #1e8449; }
-        .data-card { background: #1a1a1a; border: 1px solid #d4af37; padding: 20px; border-radius: 12px; width: 90%; max-width: 450px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); }
-        .row { margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 8px; display: flex; justify-content: space-between; }
-        .label { color: #d4af37; font-weight: bold; }
-        .warning { margin-top: 25px; background: #fff; color: #b21f1f; padding: 15px; border-radius: 10px; font-size: 0.95rem; display: flex; align-items: center; justify-content: space-between; font-weight: bold; }
-        .call-icon { background: #27ae60; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 20px; }
-        #loader { margin-top: 50px; font-size: 1.2rem; color: #d4af37; }
+        :root {
+            --primary: #1a2a6c;
+            --secondary: #b21f1f;
+            --accent: #27ae60;
+            --gold: #d4af37;
+            --dark: #0a0a0a;
+            --dark-card: #1a1a1a;
+            --light: #f8f9fa;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --gradient: linear-gradient(135deg, #1a2a6c 0%, #2a3a8c 50%, #1a2a6c 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Cairo', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--dark);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(26, 42, 108, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(178, 31, 31, 0.1) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 500px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            color: var(--gold);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--gold), #f4d03f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, var(--accent), #2ecc71);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+            animation: slideInUp 0.6s ease-out 0.3s both;
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid #1e8449;
+        }
+
+        .success-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .data-card {
+            background: var(--dark-card);
+            border: 2px solid var(--gold);
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            animation: slideInUp 0.6s ease-out 0.5s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .data-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to left, var(--primary), var(--gold), var(--secondary));
+        }
+
+        .row {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            transition: var(--transition);
+            padding: 15px 10px;
+            border-radius: 10px;
+        }
+
+        .row:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(-5px);
+        }
+
+        .row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .label {
+            color: var(--gold);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .label i {
+            font-size: 1.3rem;
+        }
+
+        .value {
+            text-align: left;
+            font-weight: 500;
+            color: #f0f0f0;
+            max-width: 60%;
+            word-break: break-word;
+        }
+
+        .warning {
+            margin-top: 30px;
+            background: linear-gradient(135deg, #fff, #f9f9f9);
+            color: var(--secondary);
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            width: 100%;
+            max-width: 500px;
+            animation: slideInUp 0.6s ease-out 0.7s both;
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+            border-right: 5px solid var(--secondary);
+        }
+
+        .warning-text {
+            flex: 1;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
+
+        .call-icon {
+            background: linear-gradient(135deg, var(--secondary), #c92f2f);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 24px;
+            box-shadow: 0 5px 15px rgba(178, 31, 31, 0.3);
+            transition: var(--transition);
+            flex-shrink: 0;
+            animation: ring 2s infinite;
+        }
+
+        @keyframes ring {
+            0%, 100% { transform: rotate(0); }
+            5%, 15% { transform: rotate(-15deg); }
+            10%, 20% { transform: rotate(15deg); }
+        }
+
+        .call-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 20px rgba(178, 31, 31, 0.5);
+        }
+
+        #loader {
+            margin: 50px 0;
+            font-size: 1.3rem;
+            color: var(--gold);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .loader-spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(212, 175, 55, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            margin-bottom: 20px;
+            animation: spin 1.2s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stamp {
+            position: absolute;
+            bottom: -15px;
+            left: -15px;
+            background: var(--primary);
+            color: var(--gold);
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transform: rotate(-15deg);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 3px solid var(--gold);
+            opacity: 0.9;
+            z-index: 1;
+            animation: stampIn 0.8s ease-out 1s both;
+        }
+
+        @keyframes stampIn {
+            from { transform: scale(0) rotate(-45deg); opacity: 0; }
+            to { transform: scale(1) rotate(-15deg); opacity: 0.9; }
+        }
+
+        .badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: var(--secondary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            animation: badgeIn 0.6s ease-out 0.9s both;
+        }
+
+        @keyframes badgeIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #777;
+            font-size: 0.9rem;
+            max-width: 500px;
+            animation: fadeIn 1s ease-out 1.2s both;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+            width: 100%;
+        }
+
+        .verification-id {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #aaa;
+            direction: ltr;
+            text-align: center;
+            word-break: break-all;
+            font-family: monospace;
+        }
+
+        .error-message {
+            background: rgba(178, 31, 31, 0.1);
+            border: 1px solid var(--secondary);
+            color: #ff9999;
+            padding: 25px;
+            border-radius: 16px;
+            max-width: 500px;
+            text-align: center;
+            font-size: 1.2rem;
+            animation: shake 0.5s ease-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .logo {
+                font-size: 3rem;
+            }
+            
+            .row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .value {
+                max-width: 100%;
+                text-align: right;
+            }
+            
+            .warning {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .warning-text {
+                padding-left: 0;
+            }
+            
+            .stamp {
+                width: 80px;
+                height: 80px;
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <div id="loader">جاري فحص البيانات...</div>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-landmark"></i>
+        </div>
+        <h1>تأكيد العضوية</h1>
+        <p>مكتب النائب أحمد الحديدي - التحقق من هوية الأعضاء</p>
+    </div>
 
-    <div id="result" style="display:none; width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="success-box">تم التأكد من الشخصية بنجاح وهو عضو المكتب الخدمى للنائب أحمد الحديدي بالفعل</div>
+    <div id="loader">
+        <div class="loader-spinner"></div>
+        <p>جاري فحص البيانات والتحقق من العضوية...</p>
+        <p style="font-size: 0.9rem; color: #aaa; margin-top: 10px;">يرجى الانتظار قليلاً</p>
+    </div>
+
+    <div id="result" style="display: none; width: 100%; max-width: 500px;">
+        <div class="success-box">
+            <i class="fas fa-check-circle" style="margin-left: 10px;"></i>
+            تم التحقق من الشخصية بنجاح وهو عضو المكتب الخدمى للنائب أحمد الحديدي
+        </div>
         
         <div class="data-card">
-            <div class="row"><span class="label">الاسم:</span> <span id="res-name"></span></div>
-            <div class="row"><span class="label">الرقم القومي:</span> <span id="res-id"></span></div>
-            <div class="row"><span class="label">محل الإقامة:</span> <span id="res-addr"></span></div>
+            <div class="badge">
+                <i class="fas fa-id-badge"></i> عضو معتمد
+            </div>
+            
+            <div class="row">
+                <span class="label"><i class="fas fa-user"></i> الاسم:</span>
+                <span class="value" id="res-name"></span>
+            </div>
+            
+            <div class="row">
+                <span class="label"><i class="fas fa-id-card"></i> الرقم القومي:</span>
+                <span class="value" id="res-id"></span>
+            </div>
+            
+            <div class="row">
+                <span class="label"><i class="fas fa-map-marker-alt"></i> محل الإقامة:</span>
+                <span class="value" id="res-addr"></span>
+            </div>
+            
+            <div class="verification-id" id="verification-id">
+                <!-- سيتم تعبئته بالجافاسكربت -->
+            </div>
+            
+            <div class="stamp">
+                <div style="text-align: center; line-height: 1.2;">
+                    <i class="fas fa-stamp" style="display: block; font-size: 1.5rem; margin-bottom: 5px;"></i>
+                    معتمد
+                </div>
+            </div>
         </div>
 
         <div class="warning">
-            <span style="flex: 1;">في حالة مخالفة الشخص لأي من القواعد أو القوانين يرجى التواصل مباشر مع النائب أحمد الحديدي على الرقم 01000006622</span>
-            <a href="tel:01000006622" class="call-icon"><i class="fas fa-phone-alt"></i></a>
+            <div class="warning-text">
+                <i class="fas fa-exclamation-triangle" style="margin-left: 10px;"></i>
+                في حالة مخالفة الشخص لأي من القواعد أو القوانين يرجى التواصل مباشرة مع النائب أحمد الحديدي
+            </div>
+            <a href="tel:01000006622" class="call-icon" title="اتصال فوري">
+                <i class="fas fa-phone-alt"></i>
+            </a>
         </div>
+        
+        <div class="footer">
+            <p>هذا التأكيد صالح للعرض الرسمي فقط</p>
+            <p>© مكتب النائب أحمد الحديدي - جميع الحقوق محفوظة</p>
+            <p id="timestamp" style="margin-top: 10px; font-size: 0.8rem; color: #666;"></p>
+        </div>
+    </div>
+
+    <div id="error" class="error-message" style="display: none; max-width: 500px;">
+        <!-- سيتم تعبئته بالجافاسكربت -->
     </div>
 
     <script type="module">
@@ -51,22 +500,129 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // الحصول على معرف العضو من الرابط
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');
 
-        if(id) {
-            getDoc(doc(db, "members", id)).then((snap) => {
-                if(snap.exists()) {
-                    document.getElementById('res-name').innerText = snap.data().name;
-                    document.getElementById('res-id').innerText = snap.data().nationalId;
-                    document.getElementById('res-addr').innerText = snap.data().address;
-                    document.getElementById('loader').style.display = 'none';
-                    document.getElementById('result').style.display = 'flex';
-                } else {
-                    document.getElementById('loader').innerText = "عذراً، هذا العضو غير موجود بالقاعدة";
-                }
+        // عرض الوقت الحالي
+        function formatDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return now.toLocaleDateString('ar-EG', options);
+        }
+
+        // عرض صفحة النتيجة
+        function showResult(memberData) {
+            document.getElementById('loader').style.display = 'none';
+            
+            // تعبئة البيانات
+            document.getElementById('res-name').textContent = memberData.name || 'غير متوفر';
+            document.getElementById('res-id').textContent = memberData.nationalId || 'غير متوفر';
+            document.getElementById('res-addr').textContent = memberData.address || 'غير متوفر';
+            
+            // عرض معرف التحقق
+            document.getElementById('verification-id').textContent = `معرف التحقق: ${id}`;
+            
+            // عرض الطابع الزمني
+            document.getElementById('timestamp').textContent = `تم التحقق في: ${formatDate()}`;
+            
+            // عرض النتيجة
+            document.getElementById('result').style.display = 'block';
+            
+            // إضافة تأثير صوتي (اختياري)
+            playSuccessSound();
+        }
+
+        // عرض رسالة خطأ
+        function showError(message) {
+            document.getElementById('loader').style.display = 'none';
+            
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>
+                <h3 style="margin-bottom: 10px;">خطأ في التحقق</h3>
+                <p>${message}</p>
+                <p style="margin-top: 15px; font-size: 0.9rem; color: #cc8888;">
+                    يرجى التأكد من صحة الرابط أو التواصل مع المسؤول
+                </p>
+            `;
+            errorDiv.style.display = 'block';
+            
+            // إضافة تأثير صوتي للخطأ (اختياري)
+            playErrorSound();
+        }
+
+        // تشغيل صوت النجاح (اختياري)
+        function playSuccessSound() {
+            // يمكنك إضافة صوت هنا إذا أردت
+            // مثال: new Audio('success-sound.mp3').play();
+        }
+
+        // تشغيل صوت الخطأ (اختياري)
+        function playErrorSound() {
+            // يمكنك إضافة صوت هنا إذا أردت
+            // مثال: new Audio('error-sound.mp3').play();
+        }
+
+        // محاكاة التأخير للتحميل (لأغراض العرض فقط)
+        function simulateLoading(delay = 1500) {
+            return new Promise(resolve => {
+                setTimeout(resolve, delay);
             });
         }
+
+        // التحقق من العضوية
+        async function verifyMembership() {
+            if (!id) {
+                await simulateLoading(1000);
+                showError("لم يتم تقديم معرف صالح للتحقق");
+                return;
+            }
+
+            try {
+                // محاكاة التأخير لإظهار مؤشر التحميل
+                await simulateLoading();
+                
+                const docRef = doc(db, "members", id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const memberData = docSnap.data();
+                    
+                    // محاكاة مزيد من التأخير للواقعية
+                    await simulateLoading(800);
+                    
+                    showResult(memberData);
+                } else {
+                    await simulateLoading(500);
+                    showError("عذراً، هذا العضو غير موجود في قاعدة البيانات");
+                }
+            } catch (error) {
+                console.error("Error fetching member:", error);
+                showError("حدث خطأ في الاتصال بالخادم. يرجى المحاولة مرة أخرى");
+            }
+        }
+
+        // بدء عملية التحقق عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', verifyMembership);
+
+        // إضافة تأثير عند النقر على أيقونة الهاتف
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.call-icon')) {
+                // يمكنك إضافة تأثير إضافي هنا
+                e.target.closest('.call-icon').style.animation = 'none';
+                setTimeout(() => {
+                    e.target.closest('.call-icon').style.animation = 'ring 2s infinite';
+                }, 10);
+            }
+        });
     </script>
 </body>
 </html>
