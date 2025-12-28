@@ -13,8 +13,8 @@
     ">
     <title>لوحة التحكم - مكتب النائب أحمد الحديدي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* نفس الـ CSS السابق... */
         :root {
             --primary: #1a2a6c;
             --secondary: #b21f1f;
@@ -22,10 +22,9 @@
             --light: #f8f9fa;
             --dark: #343a40;
             --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Cairo', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', 'Segoe UI', sans-serif; }
         body { background: #f5f7fa; min-height: 100vh; padding: 20px; color: var(--dark); }
 
         .header {
@@ -41,15 +40,14 @@
         h2::after { content: ''; position: absolute; bottom: 0; right: 0; width: 60px; height: 4px; background: var(--secondary); border-radius: 2px; }
 
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; }
         input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 16px; }
         input:focus { outline: none; border-color: var(--primary); }
 
         .btn {
             width: 100%; padding: 15px; background: var(--primary); color: white; border: none;
-            border-radius: 10px; font-size: 18px; cursor: pointer; transition: 0.3s;
+            border-radius: 10px; font-size: 18px; cursor: pointer; transition: 0.3s; margin-top: 10px;
         }
-        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .btn:hover { background: #0d1c5c; transform: translateY(-2px); }
 
         .member-card {
             background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 15px;
@@ -68,6 +66,9 @@
         .hidden { display: none; }
         .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; margin-left: 10px; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .error { color: #b21f1f; text-align: center; padding: 10px; background: #fff2f2; border-radius: 8px; margin: 10px 0; }
+        .success { color: #27ae60; text-align: center; padding: 10px; background: #f0fff4; border-radius: 8px; margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -85,7 +86,10 @@
             <div class="form-group">
                 <input type="password" id="adminPass" placeholder="أدخل كلمة السر">
             </div>
-            <button class="btn" id="loginBtn">دخول</button>
+            <button class="btn" id="loginBtn">
+                <span id="loginBtnText"><i class="fas fa-sign-in-alt"></i> دخول</span>
+            </button>
+            <div id="loginStatus" class="hidden"></div>
         </div>
 
         <!-- الإدارة -->
@@ -98,7 +102,7 @@
                 <input type="text" id="nationalId" placeholder="الرقم القومي">
             </div>
             <div class="form-group">
-                <input type="text" id="address" placeholder="محل الإقامة">
+                <input type="text" id="address" placeholder="محل الإقامة (اختياري)">
             </div>
             <button class="btn" id="addBtn">
                 <span id="btnText"><i class="fas fa-save"></i> حفظ البيانات</span>
@@ -108,9 +112,13 @@
             <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
             
             <h3><i class="fas fa-users"></i> الأعضاء المسجلون</h3>
-            <div id="membersList" style="margin-top: 20px;"></div>
+            <div id="membersList" style="margin-top: 20px;">
+                <p style="text-align:center;color:#666;">سيتم تحميل البيانات بعد تسجيل الدخول...</p>
+            </div>
             
-            <button class="btn" id="logoutBtn" style="background: #666; margin-top: 20px;">تسجيل الخروج</button>
+            <button class="btn" id="logoutBtn" style="background: #666; margin-top: 20px;">
+                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+            </button>
         </div>
     </div>
 
@@ -118,43 +126,5 @@
 
     <!-- استيراد الملف الخارجي -->
     <script type="module" src="script.js"></script>
-    
-    <!-- إضافة event listeners -->
-    <script>
-        // انتظر حتى يتم تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
-            // تعيين event listeners للأزرار
-            document.getElementById('loginBtn').addEventListener('click', function() {
-                if (typeof handleLogin === 'function') {
-                    handleLogin();
-                } else {
-                    console.error('handleLogin function not found');
-                    alert('خطأ في تحميل النظام، يرجى تحديث الصفحة');
-                }
-            });
-            
-            document.getElementById('addBtn').addEventListener('click', function() {
-                if (typeof handleAddMember === 'function') {
-                    handleAddMember();
-                } else {
-                    console.error('handleAddMember function not found');
-                    alert('خطأ في تحميل النظام، يرجى تحديث الصفحة');
-                }
-            });
-            
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                location.reload();
-            });
-            
-            // السماح بالضغط على Enter في حقل كلمة السر
-            document.getElementById('adminPass').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    if (typeof handleLogin === 'function') {
-                        handleLogin();
-                    }
-                }
-            });
-        });
-    </script>
 </body>
 </html>
