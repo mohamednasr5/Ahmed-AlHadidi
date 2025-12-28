@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' https://www.gstatic.com https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
-        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
-        font-src 'self' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
-        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com;
+        script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+        font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
+        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.firebase.com;
         img-src 'self' data: https:;
     ">
     <title>لوحة التحكم - مكتب النائب أحمد الحديدي</title>
@@ -26,12 +26,7 @@
             --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Cairo', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Cairo', Tahoma, sans-serif; }
 
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
@@ -52,24 +47,7 @@
             animation: fadeInDown 0.8s ease-out;
         }
 
-        .header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            animation: fadeIn 0.8s ease-out 0.3s both;
-        }
+        .container { max-width: 900px; margin: 0 auto; }
 
         .card {
             background: white;
@@ -81,48 +59,8 @@
             border-top: 5px solid var(--primary);
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-
-        h2 {
-            color: var(--primary);
-            margin-bottom: 25px;
-            font-size: 1.8rem;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(to right, var(--secondary), var(--primary));
-            border-radius: 2px;
-        }
-
-        h3 {
-            color: var(--dark);
-            margin: 25px 0 15px;
-            font-size: 1.4rem;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: right;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
+        .form-group { margin-bottom: 20px; text-align: right; }
+        
         input {
             width: 100%;
             padding: 15px;
@@ -130,60 +68,28 @@
             border-radius: 10px;
             font-size: 16px;
             transition: var(--transition);
-            background-color: #fdfdfd;
         }
 
         input:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.1);
-            background-color: white;
-        }
-
-        input::placeholder {
-            color: #a0a0a0;
         }
 
         .btn {
-            display: inline-block;
             padding: 15px 30px;
-            background: linear-gradient(to right, var(--primary), #2a3a8c);
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 10px;
             font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
-            text-align: center;
             width: 100%;
-            margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(26, 42, 108, 0.2);
+            transition: var(--transition);
         }
 
-        .btn:hover {
-            background: linear-gradient(to right, #2a3a8c, var(--primary));
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(26, 42, 108, 0.3);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(to right, var(--secondary), #c92f2f);
-            box-shadow: 0 4px 15px rgba(178, 31, 31, 0.2);
-        }
-
-        .btn-secondary:hover {
-            background: linear-gradient(to right, #c92f2f, var(--secondary));
-            box-shadow: 0 8px 20px rgba(178, 31, 31, 0.3);
-        }
-
-        .members-container {
-            margin-top: 30px;
-        }
+        .btn:hover { transform: translateY(-3px); opacity: 0.9; }
 
         .member-card {
             background: white;
@@ -191,91 +97,32 @@
             padding: 20px;
             margin-bottom: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-            border-right: 4px solid var(--accent);
-            transition: var(--transition);
-            animation: slideInUp 0.5s ease-out;
+            border-right: 5px solid var(--accent);
             position: relative;
-            overflow: hidden;
-        }
-
-        .member-card:hover {
-            transform: translateX(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        .member-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--primary), var(--accent));
-        }
-
-        .member-card strong {
-            color: var(--primary);
-            font-weight: 600;
         }
 
         .link-display {
             color: var(--accent);
             word-break: break-all;
-            font-size: 14px;
-            background: #f8fff9;
-            padding: 10px 15px;
+            font-size: 13px;
+            background: #f0fdf4;
+            padding: 12px;
             border-radius: 8px;
-            display: block;
-            margin-top: 8px;
-            border: 1px dashed #c1e8cc;
-            transition: var(--transition);
-            position: relative;
-            padding-left: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            border: 1px dashed #27ae60;
         }
 
-        .link-display:hover {
-            background: #f0f9f3;
-            border-color: var(--accent);
-        }
-
-        .link-display::before {
-            content: '\f0c1';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--accent);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--gray);
-            background: #f9f9f9;
-            border-radius: 12px;
-            border: 2px dashed #ddd;
-            margin-top: 20px;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: #d0d0d0;
-        }
-
-        .logo {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+        .copy-btn {
+            background: var(--accent);
             color: white;
-        }
-
-        hr {
             border: none;
-            height: 1px;
-            background: linear-gradient(to right, transparent, #ddd, transparent);
-            margin: 30px 0;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
         }
 
         .notification {
@@ -285,357 +132,167 @@
             background: white;
             padding: 15px 25px;
             border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            animation: slideInLeft 0.5s ease-out;
-            border-right: 4px solid var(--accent);
-            max-width: 400px;
+            display: none;
+            border-right: 5px solid var(--accent);
+            animation: slideIn 0.5s ease;
         }
 
-        .notification i {
-            color: var(--accent);
-            font-size: 1.5rem;
-        }
-
-        .notification.hidden {
-            animation: slideOutLeft 0.5s ease-out forwards;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes slideOutLeft {
-            from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(-30px); }
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(26, 42, 108, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(26, 42, 108, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(26, 42, 108, 0); }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .card {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 1.8rem;
-            }
-            
-            .notification {
-                left: 10px;
-                right: 10px;
-                max-width: calc(100% - 20px);
-            }
-        }
+        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+        .loading { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-left: 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">
-            <i class="fas fa-landmark"></i>
-        </div>
+        <i class="fas fa-landmark" style="font-size: 2.5rem; margin-bottom: 10px;"></i>
         <h1>لوحة التحكم - مكتب النائب أحمد الحديدي</h1>
         <p>نظام إدارة الأعضاء وتوليد روابط التحقق الشخصية</p>
     </div>
 
     <div class="container">
+        <!-- قسم تسجيل الدخول -->
         <div id="login-section" class="card">
-            <h2><i class="fas fa-lock"></i> تسجيل دخول المسؤول</h2>
+            <h2 style="margin-bottom: 20px;"><i class="fas fa-lock"></i> تسجيل دخول المسؤول</h2>
             <div class="form-group">
-                <input type="password" id="adminPass" placeholder="أدخل كلمة السر" autocomplete="off">
+                <input type="password" id="adminPass" placeholder="أدخل كلمة السر (742018)" autocomplete="off">
             </div>
-            <button class="btn" id="loginBtn">
-                <span id="loginText">دخول</span>
-                <span id="loginSpinner" style="display:none;"><span class="loading"></span> جاري التحقق...</span>
-            </button>
+            <button class="btn" id="loginBtn">دخول</button>
         </div>
 
+        <!-- قسم الإدارة -->
         <div id="admin-section" class="card" style="display:none;">
-            <h2><i class="fas fa-user-plus"></i> إضافة عضو جديد</h2>
-            <div class="form-group">
-                <input type="text" id="name" placeholder="الاسم الرباعي" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <input type="text" id="nationalId" placeholder="الرقم القومي" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <input type="text" id="address" placeholder="محل الإقامة" autocomplete="off">
-            </div>
-            <button class="btn" id="addBtn">
-                <span id="addText"><i class="fas fa-save"></i> حفظ البيانات وتوليد الرابط</span>
-                <span id="addSpinner" style="display:none;"><span class="loading"></span> جاري الحفظ...</span>
-            </button>
+            <h2 style="margin-bottom: 20px;"><i class="fas fa-user-plus"></i> إضافة عضو جديد</h2>
+            <div class="form-group"><input type="text" id="name" placeholder="الاسم الرباعي"></div>
+            <div class="form-group"><input type="text" id="nationalId" placeholder="الرقم القومي"></div>
+            <div class="form-group"><input type="text" id="address" placeholder="محل الإقامة"></div>
+            <button class="btn" id="addBtn">حفظ وتوليد الرابط</button>
             
-            <hr>
+            <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
             
             <div class="members-container">
-                <h3><i class="fas fa-users"></i> قائمة الأعضاء المسجلين</h3>
+                <h3 style="margin-bottom: 15px;"><i class="fas fa-users"></i> الأعضاء المسجلين</h3>
                 <div id="membersList"></div>
             </div>
             
-            <button class="btn btn-secondary" id="logoutBtn" style="margin-top: 20px;">
-                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
-            </button>
+            <button class="btn" id="logoutBtn" style="background: var(--secondary); margin-top: 20px;">خروج</button>
         </div>
     </div>
 
-    <div id="notification" class="notification hidden">
-        <i class="fas fa-check-circle"></i>
-        <div>
-            <strong id="notificationTitle"></strong>
-            <p id="notificationMessage"></p>
+    <div id="notification" class="notification">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i id="notifIcon" class="fas fa-check-circle"></i>
+            <span id="notifMessage"></span>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
         const firebaseConfig = {
-          apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs",
-          authDomain: "verify-39eda.firebaseapp.com",
-          projectId: "verify-39eda",
-          storageBucket: "verify-39eda.firebasestorage.app",
-          messagingSenderId: "36549490854",
-          appId: "1:36549490854:web:79b4ab27672d54b005dc67",
-          measurementId: "G-4JD68W8959"
+            apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs",
+            authDomain: "verify-39eda.firebaseapp.com",
+            projectId: "verify-39eda",
+            storageBucket: "verify-39eda.firebasestorage.app",
+            messagingSenderId: "36549490854",
+            appId: "1:36549490854:web:79b4ab27672d54b005dc67"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        function showNotification(title, message, type = 'success') {
-            const notification = document.getElementById('notification');
-            const titleEl = document.getElementById('notificationTitle');
-            const messageEl = document.getElementById('notificationMessage');
-            const icon = notification.querySelector('i');
-            
-            titleEl.textContent = title;
-            messageEl.textContent = message;
-            
-            if (type === 'error') {
-                icon.className = 'fas fa-exclamation-circle';
-                icon.style.color = '#b21f1f';
-            } else {
-                icon.className = 'fas fa-check-circle';
-                icon.style.color = '#27ae60';
-            }
-            
-            notification.classList.remove('hidden');
-            
-            setTimeout(() => {
-                notification.classList.add('hidden');
-            }, 5000);
+        // وظائف المساعدة
+        function toast(msg, type = 'success') {
+            const n = document.getElementById('notification');
+            const m = document.getElementById('notifMessage');
+            const i = document.getElementById('notifIcon');
+            m.innerText = msg;
+            n.style.display = 'block';
+            n.style.borderRightColor = type === 'success' ? '#27ae60' : '#b21f1f';
+            i.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle';
+            i.style.color = type === 'success' ? '#27ae60' : '#b21f1f';
+            setTimeout(() => n.style.display = 'none', 3000);
         }
 
-        async function login() {
-            const password = document.getElementById('adminPass').value;
-            const loginBtn = document.getElementById('loginBtn');
-            const loginText = document.getElementById('loginText');
-            const loginSpinner = document.getElementById('loginSpinner');
-            
-            if (!password) {
-                showNotification('خطأ', 'يرجى إدخال كلمة السر', 'error');
-                document.getElementById('adminPass').focus();
-                return;
-            }
-            
-            loginText.style.display = 'none';
-            loginSpinner.style.display = 'inline';
-            loginBtn.disabled = true;
-            
-            await new Promise(resolve => setTimeout(resolve, 800));
-            
-            if(password === '742018') {
+        window.copyToClipboard = (text) => {
+            navigator.clipboard.writeText(text).then(() => toast('تم نسخ الرابط بنجاح!'));
+        };
+
+        // تسجيل الدخول
+        document.getElementById('loginBtn').onclick = () => {
+            const pass = document.getElementById('adminPass').value;
+            if(pass === '742018') {
                 document.getElementById('login-section').style.display = 'none';
                 document.getElementById('admin-section').style.display = 'block';
-                showNotification('تم الدخول بنجاح', 'مرحباً بك في لوحة التحكم');
                 loadMembers();
             } else {
-                showNotification('خطأ في الدخول', 'كلمة السر غير صحيحة', 'error');
-                document.getElementById('adminPass').value = '';
-                document.getElementById('adminPass').focus();
+                toast('كلمة السر خاطئة', 'error');
             }
-            
-            loginText.style.display = 'inline';
-            loginSpinner.style.display = 'none';
-            loginBtn.disabled = false;
-        }
+        };
 
-        function logout() {
-            document.getElementById('admin-section').style.display = 'none';
-            document.getElementById('login-section').style.display = 'block';
-            document.getElementById('adminPass').value = '';
-            showNotification('تم الخروج', 'تم تسجيل الخروج بنجاح');
-        }
+        // إضافة عضو
+        document.getElementById('addBtn').onclick = async () => {
+            const name = document.getElementById('name').value;
+            const nid = document.getElementById('nationalId').value;
+            const addr = document.getElementById('address').value;
 
-        async function addMember() {
-            const name = document.getElementById('name').value.trim();
-            const nid = document.getElementById('nationalId').value.trim();
-            const addr = document.getElementById('address').value.trim();
-            const addBtn = document.getElementById('addBtn');
-            const addText = document.getElementById('addText');
-            const addSpinner = document.getElementById('addSpinner');
-            
-            if(!name || !nid) {
-                showNotification('بيانات ناقصة', 'يرجى ملء الاسم والرقم القومي', 'error');
-                return;
-            }
-            
-            addText.style.display = 'none';
-            addSpinner.style.display = 'inline';
-            addBtn.disabled = true;
-            
+            if(!name || !nid) return toast('يرجى إكمال البيانات الأساسية', 'error');
+
+            const btn = document.getElementById('addBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> جاري الحفظ...';
+
             try {
-                await addDoc(collection(db, "members"), { 
-                    name, 
-                    nationalId: nid, 
-                    address: addr,
-                    createdAt: new Date().toISOString()
+                await addDoc(collection(db, "members"), {
+                    name, nationalId: nid, address: addr, createdAt: new Date()
                 });
-                
-                showNotification('تم الحفظ بنجاح', 'تم إضافة العضو بنجاح وتوليد الرابط');
-                
+                toast('تمت الإضافة بنجاح');
                 document.getElementById('name').value = '';
                 document.getElementById('nationalId').value = '';
                 document.getElementById('address').value = '';
-                
-                await loadMembers();
-            } catch (error) {
-                console.error("Error adding document: ", error);
-                showNotification('خطأ في الحفظ', 'حدث خطأ أثناء حفظ البيانات', 'error');
+                loadMembers();
+            } catch (e) {
+                toast('حدث خطأ في الاتصال بالخادم', 'error');
             } finally {
-                addText.style.display = 'inline';
-                addSpinner.style.display = 'none';
-                addBtn.disabled = false;
+                btn.disabled = false;
+                btn.innerHTML = 'حفظ وتوليد الرابط';
             }
-        }
+        };
 
+        // تحميل القائمة
         async function loadMembers() {
+            const list = document.getElementById('membersList');
+            list.innerHTML = '<p style="text-align:center;">جاري تحميل البيانات...</p>';
+            
             try {
-                const querySnapshot = await getDocs(collection(db, "members"));
-                const list = document.getElementById('membersList');
-                
-                if (querySnapshot.empty) {
-                    list.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-user-friends"></i>
-                            <h4>لا توجد أعضاء مسجلين بعد</h4>
-                            <p>ابدأ بإضافة أول عضو عبر النموذج أعلاه</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
+                const q = query(collection(db, "members"), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
                 list.innerHTML = '';
-                
-                const members = [];
-                querySnapshot.forEach((doc) => {
-                    members.push({ id: doc.id, data: doc.data() });
-                });
-                
-                members.sort((a, b) => {
-                    const dateA = a.data.createdAt || '';
-                    const dateB = b.data.createdAt || '';
-                    return dateB.localeCompare(dateA);
-                });
-                
-                members.forEach((member, index) => {
-                    const link = `https://mohamednasr5.github.io/Ahmed-Al-Hadidi/verify.html?id=${member.id}`;
-                    const memberCard = document.createElement('div');
-                    memberCard.className = 'member-card';
-                    memberCard.style.animationDelay = `${index * 0.05}s`;
-                    
-                    memberCard.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-                            <div>
-                                <strong><i class="fas fa-user"></i> الاسم:</strong> ${member.data.name}<br>
-                                <strong><i class="fas fa-id-card"></i> الرقم القومي:</strong> ${member.data.nationalId}<br>
-                                ${member.data.address ? `<strong><i class="fas fa-map-marker-alt"></i> العنوان:</strong> ${member.data.address}<br>` : ''}
+
+                if(snap.empty) list.innerHTML = '<p style="text-align:center; color:#999;">لا يوجد أعضاء مسجلين حالياً</p>';
+
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const url = `https://mohamednasr5.github.io/Ahmed-Al-Hadidi/verify.html?id=${doc.id}`;
+                    list.innerHTML += `
+                        <div class="member-card">
+                            <p><strong><i class="fas fa-user"></i> الاسم:</strong> ${data.name}</p>
+                            <p><strong><i class="fas fa-id-card"></i> الرقم القومي:</strong> ${data.nationalId}</p>
+                            <div class="link-display">
+                                <span>${url}</span>
+                                <button class="copy-btn" onclick="copyToClipboard('${url}')">نسخ</button>
                             </div>
-                            <span style="background: #f0f0f0; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; color: #666;">
-                                #${index + 1}
-                            </span>
                         </div>
-                        <strong><i class="fas fa-link"></i> الرابط المباشر للتحقق:</strong>
-                        <span class="link-display">${link}</span>
                     `;
-                    
-                    list.appendChild(memberCard);
                 });
-            } catch (error) {
-                console.error("Error loading members: ", error);
-                showNotification('خطأ في التحميل', 'حدث خطأ أثناء تحميل قائمة الأعضاء', 'error');
+            } catch (e) {
+                list.innerHTML = '<p style="text-align:center; color:red;">فشل تحميل البيانات</p>';
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('loginBtn').addEventListener('click', login);
-            
-            document.getElementById('adminPass').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') login();
-            });
-            
-            document.getElementById('addBtn').addEventListener('click', addMember);
-            
-            document.getElementById('logoutBtn').addEventListener('click', logout);
-            
-            document.getElementById('name').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') document.getElementById('nationalId').focus();
-            });
-            
-            document.getElementById('nationalId').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') document.getElementById('address').focus();
-            });
-            
-            document.getElementById('address').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addMember();
-            });
-
-            document.getElementById('adminPass').focus();
-        });
+        document.getElementById('logoutBtn').onclick = () => location.reload();
     </script>
 </body>
 </html>
