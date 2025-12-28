@@ -105,6 +105,8 @@ function setupEventListeners() {
 
 // معالجة تسجيل الدخول
 function handleLogin() {
+     e.preventDefault(); // هذا السطر مهم لمنع تحديث الصفحة
+    const password = document.getElementById('adminPass').value.trim();
     const password = document.getElementById('adminPass').value.trim();
     const loginBtn = document.getElementById('loginBtn');
     const loginBtnText = document.getElementById('loginBtnText');
@@ -165,6 +167,8 @@ function showAdminSection() {
 
 // إضافة عضو جديد
 async function addMember() {
+     e.preventDefault(); // هذا السطر مهم
+    const name = document.getElementById('name').value.trim();
     const name = document.getElementById('name').value.trim();
     const nationalId = document.getElementById('nationalId').value.trim();
     const address = document.getElementById('address').value.trim();
