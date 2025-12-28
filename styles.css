@@ -453,3 +453,22 @@ input:focus {
 .hidden {
     display: none !important;
 }
+/* تأكد أن حقل الإدخال قابل للتعديل */
+input:not([disabled]):not([readonly]) {
+    background: #fafafa !important;
+    cursor: text !important;
+}
+
+/* إصلاح مشكلة التعطيل */
+#adminPass {
+    background: #fafafa !important;
+    color: #333 !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* تأكد أن الحقل قابل للكتابة */
+.form-group input {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+}
