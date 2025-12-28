@@ -52,34 +52,35 @@
 
     <div class="container">
         <!-- تسجيل الدخول -->
-        <div id="login-section" class="card">
-            <h2><i class="fas fa-lock"></i> دخول المسؤول</h2>
-            <p style="color: #666; margin-bottom: 20px; text-align: center;">
-                <i class="fas fa-info-circle"></i> الرجاء إدخال كلمة المرور للوصول إلى لوحة التحكم
-            </p>
-            
-            <div class="form-group">
-                <label for="adminPass"><i class="fas fa-key"></i> كلمة المرور</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="adminPass" placeholder="أدخل كلمة المرور الخاصة بك">
-                </div>
-            </div>
-            
-            <button class="btn" id="loginBtn">
-                <span id="loginBtnText"><i class="fas fa-sign-in-alt"></i> دخول</span>
-                <span id="loginBtnSpinner" class="hidden"><span class="spinner"></span> جاري التحقق...</span>
-            </button>
-            
-            <div id="loginStatus" class="hidden"></div>
-            
-            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
-                <small style="color: #888;">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    هذا النظام مخصص للمسؤولين فقط
-                </small>
-            </div>
+       <div id="login-section" class="card">
+    <h2><i class="fas fa-lock"></i> دخول المسؤول</h2>
+    <p style="color: #666; margin-bottom: 20px; text-align: center;">
+        <i class="fas fa-info-circle"></i> الرجاء إدخال كلمة المرور للوصول إلى لوحة التحكم
+    </p>
+    
+    <div class="form-group">
+        <label for="adminPass"><i class="fas fa-key"></i> كلمة المرور</label>
+        <div class="input-wrapper">
+            <i class="fas fa-lock"></i>
+            <!-- تأكد أن هذا الحقل لا يحتوي على disabled -->
+            <input type="password" id="adminPass" placeholder="أدخل كلمة المرور الخاصة بك">
         </div>
+    </div>
+    
+    <button class="btn" id="loginBtn">
+        <span id="loginBtnText"><i class="fas fa-sign-in-alt"></i> دخول</span>
+        <span id="loginBtnSpinner" class="hidden"><span class="spinner"></span> جاري التحقق...</span>
+    </button>
+    
+    <div id="loginStatus" class="hidden"></div>
+    
+    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
+        <small style="color: #888;">
+            <i class="fas fa-exclamation-triangle"></i>
+            هذا النظام مخصص للمسؤولين فقط
+        </small>
+    </div>
+</div>
 
         <!-- قسم الإدارة -->
         <div id="admin-section" class="card" style="display:none;">
