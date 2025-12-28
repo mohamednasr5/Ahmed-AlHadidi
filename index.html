@@ -8,12 +8,13 @@
         script-src 'self' https://www.gstatic.com https://cdnjs.cloudflare.com;
         style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
         font-src 'self' https://cdnjs.cloudflare.com;
-        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.firebase.com;
+        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.firebase.com https://firestore.googleapis.com;
         img-src 'self' data: https:;
     ">
     <title>لوحة التحكم - مكتب النائب أحمد الحديدي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* نفس الـ CSS السابق... */
         :root {
             --primary: #1a2a6c;
             --secondary: #b21f1f;
@@ -84,7 +85,7 @@
             <div class="form-group">
                 <input type="password" id="adminPass" placeholder="أدخل كلمة السر">
             </div>
-            <button class="btn" onclick="handleLogin()">دخول</button>
+            <button class="btn" id="loginBtn">دخول</button>
         </div>
 
         <!-- الإدارة -->
@@ -99,7 +100,7 @@
             <div class="form-group">
                 <input type="text" id="address" placeholder="محل الإقامة">
             </div>
-            <button class="btn" id="addBtn" onclick="handleAddMember()">
+            <button class="btn" id="addBtn">
                 <span id="btnText"><i class="fas fa-save"></i> حفظ البيانات</span>
                 <span id="btnSpinner" class="hidden"><span class="spinner"></span> جاري الحفظ...</span>
             </button>
@@ -109,105 +110,51 @@
             <h3><i class="fas fa-users"></i> الأعضاء المسجلون</h3>
             <div id="membersList" style="margin-top: 20px;"></div>
             
-            <button class="btn" style="background: #666; margin-top: 20px;" onclick="location.reload()">تسجيل الخروج</button>
+            <button class="btn" id="logoutBtn" style="background: #666; margin-top: 20px;">تسجيل الخروج</button>
         </div>
     </div>
 
     <div id="notification" class="notification hidden"></div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-          apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs",
-          authDomain: "verify-39eda.firebaseapp.com",
-          projectId: "verify-39eda",
-          storageBucket: "verify-39eda.firebasestorage.app",
-          messagingSenderId: "36549490854",
-          appId: "1:36549490854:web:79b4ab27672d54b005dc67"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // جعل الدوال متاحة عالمياً للأزرار
-        window.handleLogin = () => {
-            const pass = document.getElementById('adminPass').value;
-            if(pass === '742018') {
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('admin-section').style.display = 'block';
-                loadMembers();
-            } else {
-                alert('كلمة السر خاطئة');
-            }
-        };
-
-        window.handleAddMember = async () => {
-            const name = document.getElementById('name').value;
-            const nid = document.getElementById('nationalId').value;
-            const addr = document.getElementById('address').value;
+    <!-- استيراد الملف الخارجي -->
+    <script type="module" src="script.js"></script>
+    
+    <!-- إضافة event listeners -->
+    <script>
+        // انتظر حتى يتم تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            // تعيين event listeners للأزرار
+            document.getElementById('loginBtn').addEventListener('click', function() {
+                if (typeof handleLogin === 'function') {
+                    handleLogin();
+                } else {
+                    console.error('handleLogin function not found');
+                    alert('خطأ في تحميل النظام، يرجى تحديث الصفحة');
+                }
+            });
             
-            if(!name || !nid) return alert('يرجى ملء الاسم والرقم القومي');
-
-            toggleBtn(true);
-            try {
-                await addDoc(collection(db, "members"), {
-                    name,
-                    nationalId: nid,
-                    address: addr,
-                    timestamp: serverTimestamp()
-                });
-                showNote('تمت الإضافة بنجاح');
-                document.getElementById('name').value = '';
-                document.getElementById('nationalId').value = '';
-                document.getElementById('address').value = '';
-                loadMembers();
-            } catch(e) {
-                console.error(e);
-                alert('خطأ في الحفظ');
-            } finally {
-                toggleBtn(false);
-            }
-        };
-
-        async function loadMembers() {
-            const list = document.getElementById('membersList');
-            list.innerHTML = 'جاري التحميل...';
+            document.getElementById('addBtn').addEventListener('click', function() {
+                if (typeof handleAddMember === 'function') {
+                    handleAddMember();
+                } else {
+                    console.error('handleAddMember function not found');
+                    alert('خطأ في تحميل النظام، يرجى تحديث الصفحة');
+                }
+            });
             
-            try {
-                const q = query(collection(db, "members"), orderBy("timestamp", "desc"));
-                const snap = await getDocs(q);
-                list.innerHTML = '';
-                
-                snap.forEach((doc) => {
-                    const data = doc.data();
-                    const link = `https://mohamednasr5.github.io/Ahmed-Al-Hadidi/verify.html?id=${doc.id}`;
-                    list.innerHTML += `
-                        <div class="member-card">
-                            <strong>${data.name}</strong><br>
-                            <small>الرقم القومي: ${data.nationalId}</small>
-                            <span class="link-display">${link}</span>
-                        </div>
-                    `;
-                });
-            } catch(e) {
-                list.innerHTML = 'خطأ في تحميل البيانات';
-            }
-        }
-
-        function toggleBtn(loading) {
-            document.getElementById('btnText').className = loading ? 'hidden' : '';
-            document.getElementById('btnSpinner').className = loading ? '' : 'hidden';
-            document.getElementById('addBtn').disabled = loading;
-        }
-
-        function showNote(msg) {
-            const n = document.getElementById('notification');
-            n.textContent = msg;
-            n.classList.remove('hidden');
-            setTimeout(() => n.classList.add('hidden'), 3000);
-        }
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                location.reload();
+            });
+            
+            // السماح بالضغط على Enter في حقل كلمة السر
+            document.getElementById('adminPass').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    if (typeof handleLogin === 'function') {
+                        handleLogin();
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
