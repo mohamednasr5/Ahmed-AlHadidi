@@ -472,3 +472,44 @@ input:not([disabled]):not([readonly]) {
     user-select: text !important;
     -webkit-user-select: text !important;
 }
+/* أضف في نهاية الملف */
+
+/* منع التحديث التلقائي */
+form {
+    display: contents;
+}
+
+button[type="button"] {
+    cursor: pointer;
+}
+
+/* التأكد من أن الأزرار لا تسبب إرسال */
+button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* إصلاح مشكلة اللمس على الهواتف */
+@media (max-width: 768px) {
+    button, input, textarea {
+        touch-action: manipulation;
+    }
+}
+
+/* منع السلوك الافتراضي للروابط */
+a, button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* التأكد من أن الحقول غير معطلة */
+input:not([disabled]):not([readonly]) {
+    background: #fafafa;
+    cursor: text;
+}
+
+/* تأثير للزر عند الضغط */
+button:active {
+    transform: scale(0.98);
+    transition: transform 0.1s;
+}
