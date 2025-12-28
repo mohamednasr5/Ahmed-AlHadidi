@@ -21,9 +21,6 @@ async function initApp() {
         // إعداد المستمعين للأحداث
         setupEventListeners();
         
-        // إضافة تأثيرات CSS ديناميكية
-        addDynamicEffects();
-        
     } catch (error) {
         console.error('خطأ في تهيئة التطبيق:', error);
         showNotification('خطأ في تحميل النظام', 'error');
@@ -83,10 +80,13 @@ function setupEventListeners() {
         }
     }
     
-    // إضافة عضو
+    // إضافة عضو - هنا التصحيح
     const addBtn = document.getElementById('addBtn');
     if (addBtn) {
-        addBtn.addEventListener('click', addMember);
+        addBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // منع السلوك الافتراضي
+            addMember();
+        });
     }
     
     // تسجيل الخروج
@@ -98,15 +98,16 @@ function setupEventListeners() {
     // نسخ الروابط
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('copy-link')) {
+            e.preventDefault();
             copyToClipboard(e.target.dataset.link);
         }
     });
 }
 
 // معالجة تسجيل الدخول
-function handleLogin() {
-     e.preventDefault(); // هذا السطر مهم لمنع تحديث الصفحة
-    const password = document.getElementById('adminPass').value.trim();
+function handleLogin(e) {
+    if (e) e.preventDefault();
+    
     const password = document.getElementById('adminPass').value.trim();
     const loginBtn = document.getElementById('loginBtn');
     const loginBtnText = document.getElementById('loginBtnText');
@@ -165,10 +166,9 @@ function showAdminSection() {
     }
 }
 
-// إضافة عضو جديد
+// إضافة عضو جديد - هنا التصحيح الرئيسي
 async function addMember() {
-     e.preventDefault(); // هذا السطر مهم
-    const name = document.getElementById('name').value.trim();
+    // حذف e من هنا لأنه لم يعد باراميتر
     const name = document.getElementById('name').value.trim();
     const nationalId = document.getElementById('nationalId').value.trim();
     const address = document.getElementById('address').value.trim();
@@ -318,7 +318,9 @@ function copyToClipboard(text) {
 }
 
 // تسجيل الخروج
-function handleLogout() {
+function handleLogout(e) {
+    if (e) e.preventDefault();
+    
     if (confirm('هل تريد تسجيل الخروج؟')) {
         localStorage.removeItem('adminLoggedIn');
         document.getElementById('admin-section').style.display = 'none';
@@ -367,37 +369,6 @@ function formatDate(dateString) {
     });
 }
 
-// إضافة تأثيرات ديناميكية
-function addDynamicEffects() {
-    // إضافة تأثيرات للحقول
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach(input => {
-        input.addEventListener('focus', () => {
-            input.parentElement.classList.add('focused');
-        });
-        
-        input.addEventListener('blur', () => {
-            input.parentElement.classList.remove('focused');
-        });
-    });
-    
-    // إضافة تأثيرات للأزرار
-    const buttons = document.querySelectorAll('.btn');
-    buttons.forEach(btn => {
-        btn.addEventListener('mousedown', () => {
-            btn.style.transform = 'scale(0.98)';
-        });
-        
-        btn.addEventListener('mouseup', () => {
-            btn.style.transform = '';
-        });
-        
-        btn.addEventListener('mouseleave', () => {
-            btn.style.transform = '';
-        });
-    });
-}
-
 // التأكد من أن Firebase متاح
 function waitForFirebase() {
     return new Promise((resolve) => {
@@ -408,3 +379,12 @@ function waitForFirebase() {
         }
     });
 }
+
+// تعريف db بشكل عام
+let db;
+(async function() {
+    await waitForFirebase();
+    if (firebase.apps.length > 0) {
+        db = firebase.firestore();
+    }
+})();
