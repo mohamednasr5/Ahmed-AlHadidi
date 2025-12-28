@@ -8,63 +8,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* تأثيرات خاصة بصفحة التحقق */
-        .success-animation {
-            animation: successPulse 2s ease-out;
-        }
-        
-        @keyframes successPulse {
-            0% { transform: scale(0.8); opacity: 0; }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        
-        .verification-badge {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: var(--gradient-success);
+        /* تنسيقات خاصة بصفحة التحقق */
+        body {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
             color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            animation: slideIn 0.6s ease-out;
-            z-index: 100;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
         
-        .watermark {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            opacity: 0.05;
-            font-size: 15rem;
-            color: var(--gold);
-            z-index: -1;
-            pointer-events: none;
+        .verification-container {
+            max-width: 600px;
+            width: 100%;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, var(--accent), #2ecc71);
+            padding: 25px;
+            border-radius: 16px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .call-icon {
+            background: var(--secondary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            animation: pulse 2s infinite;
+        }
+        
+        .call-icon:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
-<body class="verification-body">
-    <!-- العلامة المائية -->
-    <div class="watermark">
-        <i class="fas fa-shield-alt"></i>
-    </div>
-    
-    <!-- شارة التحقق -->
-    <div class="verification-badge">
-        <i class="fas fa-shield-check"></i> نظام التحقق الآمن
-    </div>
-
-    <div class="container" style="max-width: 600px;">
+<body>
+    <div class="verification-container">
         <div class="header">
             <div class="logo">
                 <i class="fas fa-landmark"></i>
             </div>
             <h1>تأكيد العضوية</h1>
             <p>مكتب النائب أحمد الحديدي</p>
-            <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">
-                <i class="fas fa-qrcode"></i> نظام التحقق الإلكتروني
-            </div>
         </div>
 
         <!-- محمل التحميل -->
@@ -76,17 +72,11 @@
             <p style="color: #666; margin-top: 10px;">
                 <i class="fas fa-database"></i> جاري البحث في قاعدة البيانات...
             </p>
-            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
-                <small style="color: #888;">
-                    <i class="fas fa-info-circle"></i>
-                    هذا النظام يتحقق من صحة العضوية في منظومة مكتب النائب
-                </small>
-            </div>
         </div>
 
         <!-- نتيجة التحقق الناجحة -->
         <div id="result" style="display:none;">
-            <div class="success-box success-animation" style="padding: 30px; margin-bottom: 30px;">
+            <div class="success-box">
                 <div style="font-size: 3rem; margin-bottom: 15px;">
                     <i class="fas fa-check-circle"></i>
                 </div>
@@ -128,10 +118,6 @@
                         <i class="fas fa-qrcode"></i>
                         <small>معرف التحقق: <span id="ver-id" style="font-family: monospace;">...</span></small>
                     </div>
-                    <div style="margin-top: 10px; font-size: 0.8rem; color: #999; text-align: center;">
-                        <i class="fas fa-clock"></i>
-                        تم التحقق في: <span id="verify-time"></span>
-                    </div>
                 </div>
             </div>
 
@@ -143,18 +129,11 @@
                     <ul style="color: #ccc; font-size: 0.9rem; padding-right: 15px;">
                         <li>هذه البطاقة صالحة للتحقق الإلكتروني فقط</li>
                         <li>للتواصل مع المكتب مباشرة</li>
-                        <li>إبلاغ عن أي محاولة تزوير</li>
                     </ul>
                 </div>
                 <a href="tel:01000006622" class="call-icon">
                     <i class="fas fa-phone-alt"></i>
                 </a>
-            </div>
-
-            <div style="margin-top: 20px; text-align: center;">
-                <button onclick="window.print()" class="btn" style="width: auto; padding: 12px 30px;">
-                    <i class="fas fa-print"></i> طباعة البطاقة
-                </button>
             </div>
         </div>
 
@@ -165,17 +144,6 @@
             </div>
             <h3 style="color: var(--secondary); text-align: center;">تعذر التحقق من العضوية</h3>
             <p id="error-message" style="text-align: center; margin: 15px 0;"></p>
-            
-            <div style="margin-top: 30px; padding: 20px; background: #fff2f2; border-radius: 10px;">
-                <h4 style="color: #b21f1f; margin-bottom: 10px;">
-                    <i class="fas fa-lightbulb"></i> اقتراحات:
-                </h4>
-                <ul style="color: #666; padding-right: 15px;">
-                    <li>تأكد من صحة رابط التحقق</li>
-                    <li>العضوية قد تكون منتهية الصلاحية</li>
-                    <li>للإبلاغ عن مشكلة، اتصل بالمكتب مباشرة</li>
-                </ul>
-            </div>
             
             <div style="text-align: center; margin-top: 20px;">
                 <a href="tel:01000006622" class="btn btn-danger" style="width: auto;">
@@ -190,7 +158,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
     <script>
-        // إعداد Firebase
+        // إعدادات Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs",
             authDomain: "verify-39eda.firebaseapp.com",
@@ -201,7 +169,9 @@
         };
 
         // تهيئة Firebase
-        const app = firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const db = firebase.firestore();
 
         // دالة التحقق من العضوية
@@ -240,19 +210,9 @@
                             });
                     }
                     
-                    // وقت التحقق الحالي
-                    document.getElementById('verify-time').textContent = 
-                        new Date().toLocaleTimeString('ar-EG', {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        });
-                    
                     // إظهار نتيجة التحقق
                     document.getElementById('loader').style.display = 'none';
                     document.getElementById('result').style.display = 'block';
-                    
-                    // إضافة تأثير النجاح
-                    document.getElementById('result').classList.add('success-animation');
                     
                 } else {
                     showError("هذا العضو غير مسجل في منظومة المكتب");
@@ -273,33 +233,9 @@
 
         // بدء عملية التحقق عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', function() {
-            // محاكاة تأخير لمحاكاة البحث في قاعدة البيانات
             setTimeout(() => {
                 verifyMembership();
             }, 1500);
-            
-            // إضافة التأثيرات
-            const logo = document.querySelector('.logo i');
-            if (logo) {
-                logo.style.animation = 'pulse 2s infinite';
-            }
-        });
-
-        // إعدادات الطباعة
-        window.addEventListener('beforeprint', () => {
-            document.body.style.background = 'white';
-            document.querySelectorAll('.header, .data-card, .warning-box').forEach(el => {
-                el.style.boxShadow = 'none';
-                el.style.border = '1px solid #ddd';
-            });
-        });
-
-        window.addEventListener('afterprint', () => {
-            document.body.style.background = '';
-            document.querySelectorAll('.header, .data-card, .warning-box').forEach(el => {
-                el.style.boxShadow = '';
-                el.style.border = '';
-            });
         });
     </script>
 </body>
