@@ -197,5 +197,41 @@
             };
         });
     </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('adminPass');
+    
+    // تأكد أن الحقل مفعل
+    if (passwordInput) {
+        passwordInput.disabled = false;
+        passwordInput.readOnly = false;
+        
+        // اختبار: جرب الكتابة في الحقل
+        passwordInput.focus();
+        
+        // أضف حدث للكتابة
+        passwordInput.addEventListener('input', function(e) {
+            console.log('المستخدم يكتب:', e.target.value);
+        });
+    }
+    
+    // اختبار وظيفة الزر
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', function() {
+            const password = document.getElementById('adminPass').value;
+            alert('كلمة المرور المدخلة: ' + password);
+        });
+    }
+    
+    // السماح بالدخول بالزر Enter
+    document.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && document.getElementById('adminPass')) {
+            const password = document.getElementById('adminPass').value;
+            alert('تم الضغط على Enter. كلمة المرور: ' + password);
+        }
+    });
+});
+</script>
 </body>
 </html>
