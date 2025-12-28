@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://www.gstatic.com https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
+        font-src 'self' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/;
+        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com;
+        img-src 'self' data: https:;
+    ">
     <title>تأكيد العضوية - مكتب النائب أحمد الحديدي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -366,7 +374,6 @@
             75% { transform: translateX(10px); }
         }
 
-        /* Responsive */
         @media (max-width: 600px) {
             body {
                 padding: 15px;
@@ -450,9 +457,7 @@
                 <span class="value" id="res-addr"></span>
             </div>
             
-            <div class="verification-id" id="verification-id">
-                <!-- سيتم تعبئته بالجافاسكربت -->
-            </div>
+            <div class="verification-id" id="verification-id"></div>
             
             <div class="stamp">
                 <div style="text-align: center; line-height: 1.2;">
@@ -479,9 +484,7 @@
         </div>
     </div>
 
-    <div id="error" class="error-message" style="display: none; max-width: 500px;">
-        <!-- سيتم تعبئته بالجافاسكربت -->
-    </div>
+    <div id="error" class="error-message" style="display: none; max-width: 500px;"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
@@ -500,11 +503,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // الحصول على معرف العضو من الرابط
         const params = new URLSearchParams(window.location.search);
         const id = params.get('id');
 
-        // عرض الوقت الحالي
         function formatDate() {
             const now = new Date();
             const options = { 
@@ -518,29 +519,20 @@
             return now.toLocaleDateString('ar-EG', options);
         }
 
-        // عرض صفحة النتيجة
         function showResult(memberData) {
             document.getElementById('loader').style.display = 'none';
             
-            // تعبئة البيانات
             document.getElementById('res-name').textContent = memberData.name || 'غير متوفر';
             document.getElementById('res-id').textContent = memberData.nationalId || 'غير متوفر';
             document.getElementById('res-addr').textContent = memberData.address || 'غير متوفر';
             
-            // عرض معرف التحقق
             document.getElementById('verification-id').textContent = `معرف التحقق: ${id}`;
             
-            // عرض الطابع الزمني
             document.getElementById('timestamp').textContent = `تم التحقق في: ${formatDate()}`;
             
-            // عرض النتيجة
             document.getElementById('result').style.display = 'block';
-            
-            // إضافة تأثير صوتي (اختياري)
-            playSuccessSound();
         }
 
-        // عرض رسالة خطأ
         function showError(message) {
             document.getElementById('loader').style.display = 'none';
             
@@ -554,31 +546,14 @@
                 </p>
             `;
             errorDiv.style.display = 'block';
-            
-            // إضافة تأثير صوتي للخطأ (اختياري)
-            playErrorSound();
         }
 
-        // تشغيل صوت النجاح (اختياري)
-        function playSuccessSound() {
-            // يمكنك إضافة صوت هنا إذا أردت
-            // مثال: new Audio('success-sound.mp3').play();
-        }
-
-        // تشغيل صوت الخطأ (اختياري)
-        function playErrorSound() {
-            // يمكنك إضافة صوت هنا إذا أردت
-            // مثال: new Audio('error-sound.mp3').play();
-        }
-
-        // محاكاة التأخير للتحميل (لأغراض العرض فقط)
         function simulateLoading(delay = 1500) {
             return new Promise(resolve => {
                 setTimeout(resolve, delay);
             });
         }
 
-        // التحقق من العضوية
         async function verifyMembership() {
             if (!id) {
                 await simulateLoading(1000);
@@ -587,7 +562,6 @@
             }
 
             try {
-                // محاكاة التأخير لإظهار مؤشر التحميل
                 await simulateLoading();
                 
                 const docRef = doc(db, "members", id);
@@ -596,7 +570,6 @@
                 if (docSnap.exists()) {
                     const memberData = docSnap.data();
                     
-                    // محاكاة مزيد من التأخير للواقعية
                     await simulateLoading(800);
                     
                     showResult(memberData);
@@ -610,18 +583,17 @@
             }
         }
 
-        // بدء عملية التحقق عند تحميل الصفحة
-        window.addEventListener('DOMContentLoaded', verifyMembership);
-
-        // إضافة تأثير عند النقر على أيقونة الهاتف
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.call-icon')) {
-                // يمكنك إضافة تأثير إضافي هنا
-                e.target.closest('.call-icon').style.animation = 'none';
-                setTimeout(() => {
-                    e.target.closest('.call-icon').style.animation = 'ring 2s infinite';
-                }, 10);
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            verifyMembership();
+            
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.call-icon')) {
+                    e.target.closest('.call-icon').style.animation = 'none';
+                    setTimeout(() => {
+                        e.target.closest('.call-icon').style.animation = 'ring 2s infinite';
+                    }, 10);
+                }
+            });
         });
     </script>
 </body>
