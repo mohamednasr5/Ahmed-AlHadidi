@@ -6,324 +6,118 @@
     <title>لوحة التحكم - مكتب النائب أحمد الحديدي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 30px;
-            background: linear-gradient(135deg, #1a2a6c, #2a3a8c);
-            color: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        
-        .logo {
-            font-size: 3rem;
-            color: #d4af37;
-            margin-bottom: 15px;
-        }
-        
-        .header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            border-top: 5px solid #1a2a6c;
-        }
-        
-        .stat-card i {
-            font-size: 2.5rem;
-            color: #1a2a6c;
-            margin-bottom: 15px;
-        }
-        
-        .stat-card h3 {
-            font-size: 2rem;
-            color: #1a2a6c;
-            margin-bottom: 10px;
-        }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-        
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .card h2 {
-            color: #1a2a6c;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #d4af37;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: #1a2a6c;
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            margin: 10px 5px;
-            transition: 0.3s;
-        }
-        
-        .btn:hover {
-            background: #0d1c5c;
-            transform: translateY(-2px);
-        }
-        
-        .btn-success {
-            background: #27ae60;
-        }
-        
-        .btn-danger {
-            background: #b21f1f;
-        }
-        
-        .recent-members {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        
-        .member-item {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .member-item:last-child {
-            border-bottom: none;
-        }
-        
-        .quick-actions {
-            text-align: center;
-            margin-top: 30px;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            color: white;
-            padding: 20px;
-            opacity: 0.8;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-landmark"></i>
+        </div>
+        <h1>لوحة التحكم - مكتب النائب أحمد الحديدي</h1>
+        <p>نظام إدارة الأعضاء وتوليد روابط التحقق الآمنة</p>
+    </div>
+
     <div class="container">
-        <div class="header">
-            <div class="logo">
-                <i class="fas fa-landmark"></i>
-            </div>
-            <h1>لوحة التحكم - مكتب النائب أحمد الحديدي</h1>
-            <p>مرحباً بك في نظام إدارة الأعضاء والتحقق</p>
-        </div>
-        
-        <div class="stats-grid">
-            <div class="stat-card">
-                <i class="fas fa-users"></i>
-                <h3 id="totalMembers">0</h3>
-                <p>إجمالي الأعضاء</p>
-            </div>
+        <!-- قسم تسجيل الدخول -->
+        <div id="login-section" class="card">
+            <h2><i class="fas fa-lock"></i> دخول المسؤول</h2>
+            <p style="color: #666; margin-bottom: 20px; text-align: center;">
+                <i class="fas fa-info-circle"></i> الرجاء إدخال كلمة المرور للوصول إلى لوحة التحكم
+            </p>
             
-            <div class="stat-card">
-                <i class="fas fa-user-plus"></i>
-                <h3 id="todayMembers">0</h3>
-                <p>أعضاء جدد اليوم</p>
-            </div>
-            
-            <div class="stat-card">
-                <i class="fas fa-check-circle"></i>
-                <h3 id="verifiedToday">0</h3>
-                <p>تحقق اليوم</p>
-            </div>
-            
-            <div class="stat-card">
-                <i class="fas fa-chart-line"></i>
-                <h3 id="totalVerified">0</h3>
-                <p>إجمالي التحقق</p>
-            </div>
-        </div>
-        
-        <div class="main-content">
-            <div class="card">
-                <h2><i class="fas fa-user-plus"></i> إضافة عضو جديد</h2>
-                <p>إضافة عضو جديد إلى قاعدة البيانات وتوليد رابط التحقق</p>
-                <a href="admin.html" class="btn btn-success">
-                    <i class="fas fa-plus-circle"></i> إضافة عضو
-                </a>
-            </div>
-            
-            <div class="card">
-                <h2><i class="fas fa-list-alt"></i> إدارة الأعضاء</h2>
-                <p>عرض وتعديل وحذف الأعضاء المسجلين</p>
-                <a href="members.html" class="btn">
-                    <i class="fas fa-users-cog"></i> عرض جميع الأعضاء
-                </a>
-            </div>
-            
-            <div class="card">
-                <h2><i class="fas fa-link"></i> روابط التحقق</h2>
-                <p>إدارة وعرض جميع روابط التحقق المولدة</p>
-                <a href="links.html" class="btn">
-                    <i class="fas fa-external-link-alt"></i> عرض الروابط
-                </a>
-            </div>
-            
-            <div class="card">
-                <h2><i class="fas fa-cog"></i> الإعدادات</h2>
-                <p>تغيير إعدادات النظام وكلمة المرور</p>
-                <a href="settings.html" class="btn">
-                    <i class="fas fa-sliders-h"></i> فتح الإعدادات
-                </a>
-            </div>
-        </div>
-        
-        <div class="card">
-            <h2><i class="fas fa-history"></i> أحدث الأعضاء</h2>
-            <div class="recent-members" id="recentMembers">
-                <div class="member-item">
-                    <div>
-                        <strong>محمد أحمد</strong>
-                        <p>الرقم القومي: 29901010101010</p>
-                    </div>
-                    <span>قبل 5 دقائق</span>
+            <div class="form-group">
+                <label for="adminPass"><i class="fas fa-key"></i> كلمة المرور</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="adminPass" placeholder="أدخل كلمة المرور" autocomplete="current-password">
                 </div>
-                <!-- سيتم تحميل الأعضاء هنا -->
             </div>
+            
+            <!-- تأكد من type="button" -->
+            <button class="btn" id="loginBtn" type="button">
+                <span id="loginBtnText"><i class="fas fa-sign-in-alt"></i> دخول</span>
+                <span id="loginBtnSpinner" class="hidden"><span class="spinner"></span> جاري التحقق...</span>
+            </button>
+            
+            <div id="loginStatus" class="hidden"></div>
         </div>
-        
-        <div class="quick-actions">
-            <a href="admin.html" class="btn">
-                <i class="fas fa-user-plus"></i> إضافة عضو
-            </a>
-            <a href="verify.html" class="btn btn-success">
-                <i class="fas fa-check-circle"></i> صفحة التحقق
-            </a>
-            <button onclick="logout()" class="btn btn-danger">
+
+        <!-- قسم الإدارة -->
+        <div id="admin-section" class="card" style="display:none;">
+            <h2><i class="fas fa-user-plus"></i> إضافة عضو جديد</h2>
+            
+            <div class="form-group">
+                <label for="name"><i class="fas fa-user"></i> الاسم الرباعي</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="name" placeholder="أدخل الاسم الرباعي">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="nationalId"><i class="fas fa-id-card"></i> الرقم القومي</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-id-card"></i>
+                    <input type="text" id="nationalId" placeholder="أدخل الرقم القومي (14 رقم)" maxlength="14" inputmode="numeric">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="address"><i class="fas fa-map-marker-alt"></i> العنوان</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" id="address" placeholder="أدخل العنوان (اختياري)">
+                </div>
+            </div>
+            
+            <!-- تأكد من type="button" -->
+            <button class="btn btn-success" id="addBtn" type="button">
+                <span id="btnText"><i class="fas fa-save"></i> حفظ العضو</span>
+                <span id="btnSpinner" class="hidden"><span class="spinner"></span> جاري الحفظ...</span>
+            </button>
+            
+            <div id="addStatus" class="hidden"></div>
+            
+            <hr style="margin: 30px 0;">
+            
+            <h2><i class="fas fa-users"></i> الأعضاء المسجلون</h2>
+            <div id="membersList">
+                <p style="text-align:center;color:#666;">سيتم تحميل الأعضاء بعد تسجيل الدخول</p>
+            </div>
+            
+            <!-- تأكد من type="button" -->
+            <button class="btn btn-danger" id="logoutBtn" type="button" style="margin-top: 20px;">
                 <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
             </button>
         </div>
-        
-        <div class="footer">
-            <p>© 2024 مكتب النائب أحمد الحديدي. جميع الحقوق محفوظة.</p>
-            <p>آخر تحديث: <span id="currentDate"></span></p>
-        </div>
     </div>
 
+    <div id="notification" class="notification hidden"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <!-- التطبيق الرئيسي -->
+    <script src="script.js"></script>
+    
+    <!-- تهيئة Firebase -->
     <script>
-        // تحديث التاريخ
-        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ar-EG', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        // إعدادات Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs",
+            authDomain: "verify-39eda.firebaseapp.com",
+            projectId: "verify-39eda",
+            storageBucket: "verify-39eda.firebasestorage.app",
+            messagingSenderId: "36549490854",
+            appId: "1:36549490854:web:79b4ab27672d54b005dc67"
+        };
         
-        // محاكاة الإحصائيات
-        function updateStats() {
-            document.getElementById('totalMembers').textContent = '125';
-            document.getElementById('todayMembers').textContent = '5';
-            document.getElementById('verifiedToday').textContent = '18';
-            document.getElementById('totalVerified').textContent = '892';
-            
-            // محاكاة الأعضاء الحديثين
-            const recentMembers = [
-                {name: 'أحمد محمود', id: '29901010101011', time: 'قبل 2 دقيقة'},
-                {name: 'سارة خالد', id: '29901010101012', time: 'قبل 15 دقيقة'},
-                {name: 'علي محمد', id: '29901010101013', time: 'قبل 30 دقيقة'},
-                {name: 'فاطمة عمر', id: '29901010101014', time: 'قبل ساعة'},
-                {name: 'يوسف أحمد', id: '29901010101015', time: 'قبل ساعتين'}
-            ];
-            
-            const container = document.getElementById('recentMembers');
-            container.innerHTML = '';
-            
-            recentMembers.forEach(member => {
-                const div = document.createElement('div');
-                div.className = 'member-item';
-                div.innerHTML = `
-                    <div>
-                        <strong>${member.name}</strong>
-                        <p>الرقم القومي: ${member.id}</p>
-                    </div>
-                    <span>${member.time}</span>
-                `;
-                container.appendChild(div);
-            });
+        // تهيئة Firebase مرة واحدة فقط
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
-        
-        // دالة تسجيل الخروج
-        function logout() {
-            if (confirm('هل تريد تسجيل الخروج؟')) {
-                localStorage.removeItem('adminLoggedIn');
-                window.location.href = 'admin.html';
-            }
-        }
-        
-        // التحقق من تسجيل الدخول
-        function checkAuth() {
-            const isLoggedIn = localStorage.getItem('adminLoggedIn');
-            if (!isLoggedIn) {
-                window.location.href = 'admin.html';
-            }
-        }
-        
-        // عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuth();
-            updateStats();
-            
-            // تحديث الإحصائيات كل 30 ثانية
-            setInterval(updateStats, 30000);
-        });
+        window.db = firebase.firestore();
     </script>
 </body>
 </html>
