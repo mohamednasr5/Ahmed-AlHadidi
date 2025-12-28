@@ -156,7 +156,7 @@
         <div id="login-section" class="card">
             <h2 style="margin-bottom: 20px;"><i class="fas fa-lock"></i> تسجيل دخول المسؤول</h2>
             <div class="form-group">
-                <input type="password" id="adminPass" placeholder="أدخل كلمة السر (742018)" autocomplete="off">
+                <input type="password" id="adminPass" placeholder="أدخل كلمة السر (742018)" autocomplete="current-password">
             </div>
             <button class="btn" id="loginBtn">دخول</button>
         </div>
@@ -164,9 +164,15 @@
         <!-- قسم الإدارة -->
         <div id="admin-section" class="card" style="display:none;">
             <h2 style="margin-bottom: 20px;"><i class="fas fa-user-plus"></i> إضافة عضو جديد</h2>
-            <div class="form-group"><input type="text" id="name" placeholder="الاسم الرباعي"></div>
-            <div class="form-group"><input type="text" id="nationalId" placeholder="الرقم القومي"></div>
-            <div class="form-group"><input type="text" id="address" placeholder="محل الإقامة"></div>
+            <div class="form-group">
+                <input type="text" id="name" placeholder="الاسم الرباعي" autocomplete="name">
+            </div>
+            <div class="form-group">
+                <input type="text" id="nationalId" placeholder="الرقم القومي" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <input type="text" id="address" placeholder="محل الإقامة" autocomplete="street-address">
+            </div>
             <button class="btn" id="addBtn">حفظ وتوليد الرابط</button>
             
             <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
@@ -203,7 +209,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // وظائف المساعدة
         function toast(msg, type = 'success') {
             const n = document.getElementById('notification');
             const m = document.getElementById('notifMessage');
@@ -220,7 +225,6 @@
             navigator.clipboard.writeText(text).then(() => toast('تم نسخ الرابط بنجاح!'));
         };
 
-        // تسجيل الدخول
         document.getElementById('loginBtn').onclick = () => {
             const pass = document.getElementById('adminPass').value;
             if(pass === '742018') {
@@ -232,7 +236,6 @@
             }
         };
 
-        // إضافة عضو
         document.getElementById('addBtn').onclick = async () => {
             const name = document.getElementById('name').value;
             const nid = document.getElementById('nationalId').value;
@@ -261,7 +264,6 @@
             }
         };
 
-        // تحميل القائمة
         async function loadMembers() {
             const list = document.getElementById('membersList');
             list.innerHTML = '<p style="text-align:center;">جاري تحميل البيانات...</p>';
