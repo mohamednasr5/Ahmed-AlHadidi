@@ -1,52 +1,306 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تأكيد العضوية - مكتب النائب أحمد الحديدي</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-:root { --primary: #1a2a6c; --secondary: #b21f1f; --accent: #27ae60; --gold: #d4af37; --dark: #0a0a0a; }
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-body { background: var(--dark); color: white; min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.header { text-align: center; margin-bottom: 30px; }
-.logo { font-size: 4rem; color: var(--gold); animation: pulse 2s infinite; }
-.header h1 { font-size: 2.2rem; background: linear-gradient(to right, var(--gold), #f4d03f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.success-box { background: linear-gradient(135deg, var(--accent), #2ecc71); padding: 25px; border-radius: 16px; margin: 20px 0; text-align: center; font-weight: bold; }
-.data-card { background: #1a1a1a; border: 2px solid var(--gold); padding: 30px; border-radius: 20px; max-width: 500px; }
-.row { border-bottom: 1px solid #333; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-.row:hover { background: rgba(255, 255, 255, 0.05); }
-.label { color: var(--gold); font-weight: 600; display: flex; gap: 10px; }
-.value { color: #f0f0f0; }
-.warning { background: #fff; color: var(--secondary); padding: 20px; border-radius: 16px; display: flex; align-items: center; gap: 15px; margin-top: 30px; max-width: 500px; }
-.call-icon { background: var(--secondary); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; animation: ring 2s infinite; }
-.spinner { width: 50px; height: 50px; border: 5px solid rgba(212,175,55,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
-.verification-id { margin-top: 15px; font-size: 0.8rem; color: #999; text-align: center; }
-#error { display: none; color: #ff6b6b; padding: 20px; border: 2px solid var(--secondary); border-radius: 15px; margin-top: 30px; max-width: 500px; }
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-@keyframes ring { 0%, 100% { transform: rotate(0deg); } 10%, 20% { transform: rotate(15deg); } }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تأكيد العضوية - مكتب النائب أحمد الحديدي</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* تأثيرات خاصة بصفحة التحقق */
+        .success-animation {
+            animation: successPulse 2s ease-out;
+        }
+        
+        @keyframes successPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .verification-badge {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--gradient-success);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            animation: slideIn 0.6s ease-out;
+            z-index: 100;
+        }
+        
+        .watermark {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            opacity: 0.05;
+            font-size: 15rem;
+            color: var(--gold);
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
 </head>
-<body>
-<div class="header"><div class="logo"><i class="fas fa-landmark"></i></div><h1>تأكيد العضوية</h1><p>مكتب النائب أحمد الحديدي</p></div>
-<div id="loader"><div class="spinner"></div><p>جاري التحقق من قاعدة البيانات...</p></div>
-<div id="result" style="display:none; text-align: center;">
-<div class="success-box"><i class="fas fa-check-circle"></i> تم التحقق بنجاح</div>
-<div class="data-card"><div class="row"><span class="label"><i class="fas fa-user"></i> الاسم:</span><span class="value" id="res-name"></span></div><div class="row"><span class="label"><i class="fas fa-id-card"></i> الرقم القومي:</span><span class="value" id="res-id"></span></div><div class="row"><span class="label"><i class="fas fa-map-marker-alt"></i> العنوان:</span><span class="value" id="res-addr"></span></div><div class="verification-id" id="ver-id"></div></div>
-<div class="warning"><div>للبلاغات التواصل مع مكتب النائب مباشرة</div><a href="tel:01000006622" class="call-icon"><i class="fas fa-phone-alt"></i></a></div>
-</div>
-<div id="error"></div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-const firebaseConfig = { apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs", authDomain: "verify-39eda.firebaseapp.com", projectId: "verify-39eda", storageBucket: "verify-39eda.firebasestorage.app", messagingSenderId: "36549490854", appId: "1:36549490854:web:79b4ab27672d54b005dc67" };
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-async function verify() { try { const urlParams = new URLSearchParams(window.location.search); const memberId = urlParams.get('id'); if (!memberId) { showError("عذراً، لم يتم العثور على معرف عضو"); return; } const docRef = doc(db, "members", memberId); const docSnap = await getDoc(docRef); if (docSnap.exists()) { const data = docSnap.data(); document.getElementById('res-name').textContent = data.name || "غير مسجل"; document.getElementById('res-id').textContent = data.nationalId || "غير مسجل"; document.getElementById('res-addr').textContent = data.address || "غير مسجل"; document.getElementById('ver-id').textContent = `ID: ${memberId}`; document.getElementById('loader').style.display = 'none'; document.getElementById('result').style.display = 'block'; } else { showError("هذا العضو غير مسجل في المنظومة"); } } catch (error) { console.error(error); showError("حدث خطأ - حاول لاحقاً"); } }
-function showError(msg) { document.getElementById('loader').style.display = 'none'; document.getElementById('error').textContent = msg; document.getElementById('error').style.display = 'block'; }
-verify();
-</script>
+<body class="verification-body">
+    <!-- العلامة المائية -->
+    <div class="watermark">
+        <i class="fas fa-shield-alt"></i>
+    </div>
+    
+    <!-- شارة التحقق -->
+    <div class="verification-badge">
+        <i class="fas fa-shield-check"></i> نظام التحقق الآمن
+    </div>
+
+    <div class="container" style="max-width: 600px;">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-landmark"></i>
+            </div>
+            <h1>تأكيد العضوية</h1>
+            <p>مكتب النائب أحمد الحديدي</p>
+            <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">
+                <i class="fas fa-qrcode"></i> نظام التحقق الإلكتروني
+            </div>
+        </div>
+
+        <!-- محمل التحميل -->
+        <div id="loader" class="card" style="text-align: center;">
+            <div style="margin-bottom: 20px;">
+                <div class="spinner" style="width: 60px; height: 60px; border-width: 4px; margin: 0 auto;"></div>
+            </div>
+            <h3 style="color: var(--primary);">جاري التحقق من العضوية</h3>
+            <p style="color: #666; margin-top: 10px;">
+                <i class="fas fa-database"></i> جاري البحث في قاعدة البيانات...
+            </p>
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                <small style="color: #888;">
+                    <i class="fas fa-info-circle"></i>
+                    هذا النظام يتحقق من صحة العضوية في منظومة مكتب النائب
+                </small>
+            </div>
+        </div>
+
+        <!-- نتيجة التحقق الناجحة -->
+        <div id="result" style="display:none;">
+            <div class="success-box success-animation" style="padding: 30px; margin-bottom: 30px;">
+                <div style="font-size: 3rem; margin-bottom: 15px;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 style="margin: 0; color: white;">تم التحقق بنجاح</h2>
+                <p style="margin-top: 10px; opacity: 0.9;">العضوية صحيحة ونشطة</p>
+            </div>
+
+            <div class="data-card">
+                <div class="row">
+                    <span class="label">
+                        <i class="fas fa-user-circle"></i> الاسم الكامل:
+                    </span>
+                    <span class="value" id="res-name">...</span>
+                </div>
+                
+                <div class="row">
+                    <span class="label">
+                        <i class="fas fa-fingerprint"></i> الرقم القومي:
+                    </span>
+                    <span class="value" id="res-id">...</span>
+                </div>
+                
+                <div class="row">
+                    <span class="label">
+                        <i class="fas fa-home"></i> محل الإقامة:
+                    </span>
+                    <span class="value" id="res-addr">...</span>
+                </div>
+                
+                <div class="row">
+                    <span class="label">
+                        <i class="fas fa-calendar-check"></i> تاريخ التسجيل:
+                    </span>
+                    <span class="value" id="res-date">...</span>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background: rgba(212, 175, 55, 0.1); border-radius: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px; color: var(--gold);">
+                        <i class="fas fa-qrcode"></i>
+                        <small>معرف التحقق: <span id="ver-id" style="font-family: monospace;">...</span></small>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: #999; text-align: center;">
+                        <i class="fas fa-clock"></i>
+                        تم التحقق في: <span id="verify-time"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <div style="flex: 1;">
+                    <h4 style="color: var(--gold); margin-bottom: 10px;">
+                        <i class="fas fa-exclamation-triangle"></i> ملاحظات هامة
+                    </h4>
+                    <ul style="color: #ccc; font-size: 0.9rem; padding-right: 15px;">
+                        <li>هذه البطاقة صالحة للتحقق الإلكتروني فقط</li>
+                        <li>للتواصل مع المكتب مباشرة</li>
+                        <li>إبلاغ عن أي محاولة تزوير</li>
+                    </ul>
+                </div>
+                <a href="tel:01000006622" class="call-icon">
+                    <i class="fas fa-phone-alt"></i>
+                </a>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <button onclick="window.print()" class="btn" style="width: auto; padding: 12px 30px;">
+                    <i class="fas fa-print"></i> طباعة البطاقة
+                </button>
+            </div>
+        </div>
+
+        <!-- رسالة الخطأ -->
+        <div id="error" class="card" style="display:none; border-color: var(--secondary);">
+            <div style="text-align: center; color: var(--secondary); margin-bottom: 20px;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem;"></i>
+            </div>
+            <h3 style="color: var(--secondary); text-align: center;">تعذر التحقق من العضوية</h3>
+            <p id="error-message" style="text-align: center; margin: 15px 0;"></p>
+            
+            <div style="margin-top: 30px; padding: 20px; background: #fff2f2; border-radius: 10px;">
+                <h4 style="color: #b21f1f; margin-bottom: 10px;">
+                    <i class="fas fa-lightbulb"></i> اقتراحات:
+                </h4>
+                <ul style="color: #666; padding-right: 15px;">
+                    <li>تأكد من صحة رابط التحقق</li>
+                    <li>العضوية قد تكون منتهية الصلاحية</li>
+                    <li>للإبلاغ عن مشكلة، اتصل بالمكتب مباشرة</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="tel:01000006622" class="btn btn-danger" style="width: auto;">
+                    <i class="fas fa-phone-alt"></i> الاتصال بالمكتب
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        // إعداد Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs",
+            authDomain: "verify-39eda.firebaseapp.com",
+            projectId: "verify-39eda",
+            storageBucket: "verify-39eda.firebasestorage.app",
+            messagingSenderId: "36549490854",
+            appId: "1:36549490854:web:79b4ab27672d54b005dc67"
+        };
+
+        // تهيئة Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // دالة التحقق من العضوية
+        async function verifyMembership() {
+            try {
+                // الحصول على معرف العضو من رابط URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const memberId = urlParams.get('id');
+                
+                if (!memberId) {
+                    showError("عذراً، لم يتم العثور على معرف العضو في الرابط");
+                    return;
+                }
+                
+                // البحث في قاعدة البيانات
+                const docRef = db.collection("members").doc(memberId);
+                const docSnap = await docRef.get();
+                
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    // تحديث البيانات في الصفحة
+                    document.getElementById('res-name').textContent = data.name || "غير مسجل";
+                    document.getElementById('res-id').textContent = data.nationalId || "غير مسجل";
+                    document.getElementById('res-addr').textContent = data.address || "غير محدد";
+                    document.getElementById('ver-id').textContent = memberId;
+                    
+                    // تنسيق التاريخ
+                    if (data.timestamp) {
+                        const date = new Date(data.timestamp);
+                        document.getElementById('res-date').textContent = 
+                            date.toLocaleDateString('ar-EG', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                    }
+                    
+                    // وقت التحقق الحالي
+                    document.getElementById('verify-time').textContent = 
+                        new Date().toLocaleTimeString('ar-EG', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    
+                    // إظهار نتيجة التحقق
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('result').style.display = 'block';
+                    
+                    // إضافة تأثير النجاح
+                    document.getElementById('result').classList.add('success-animation');
+                    
+                } else {
+                    showError("هذا العضو غير مسجل في منظومة المكتب");
+                }
+                
+            } catch (error) {
+                console.error('خطأ في التحقق:', error);
+                showError("حدث خطأ في النظام. يرجى المحاولة لاحقاً");
+            }
+        }
+
+        // دالة عرض الخطأ
+        function showError(message) {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('error-message').textContent = message;
+        }
+
+        // بدء عملية التحقق عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            // محاكاة تأخير لمحاكاة البحث في قاعدة البيانات
+            setTimeout(() => {
+                verifyMembership();
+            }, 1500);
+            
+            // إضافة التأثيرات
+            const logo = document.querySelector('.logo i');
+            if (logo) {
+                logo.style.animation = 'pulse 2s infinite';
+            }
+        });
+
+        // إعدادات الطباعة
+        window.addEventListener('beforeprint', () => {
+            document.body.style.background = 'white';
+            document.querySelectorAll('.header, .data-card, .warning-box').forEach(el => {
+                el.style.boxShadow = 'none';
+                el.style.border = '1px solid #ddd';
+            });
+        });
+
+        window.addEventListener('afterprint', () => {
+            document.body.style.background = '';
+            document.querySelectorAll('.header, .data-card, .warning-box').forEach(el => {
+                el.style.boxShadow = '';
+                el.style.border = '';
+            });
+        });
+    </script>
 </body>
 </html>
