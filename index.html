@@ -3,128 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self' https://www.gstatic.com https://cdnjs.cloudflare.com;
-        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
-        font-src 'self' https://cdnjs.cloudflare.com;
-        connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://*.firebase.com https://firestore.googleapis.com;
-        img-src 'self' data: https:;
-    ">
     <title>لوحة التحكم - مكتب النائب أحمد الحديدي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        :root {
-            --primary: #1a2a6c;
-            --secondary: #b21f1f;
-            --accent: #27ae60;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        /* تأثيرات إضافية */
+        .shake {
+            animation: shake 0.5s;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', 'Segoe UI', sans-serif; }
-        body { background: #f5f7fa; min-height: 100vh; padding: 20px; color: var(--dark); }
-
-        .header {
-            text-align: center; margin-bottom: 30px; padding: 20px;
-            background: linear-gradient(to right, var(--primary), #2a3a8c);
-            color: white; border-radius: 16px; box-shadow: var(--shadow);
-        }
-
-        .container { max-width: 900px; margin: 0 auto; }
-        .card { background: white; border-radius: 16px; padding: 30px; box-shadow: var(--shadow); margin-bottom: 30px; border-top: 5px solid var(--primary); }
         
-        h2 { color: var(--primary); margin-bottom: 25px; position: relative; padding-bottom: 10px; }
-        h2::after { content: ''; position: absolute; bottom: 0; right: 0; width: 60px; height: 4px; background: var(--secondary); border-radius: 2px; }
-
-        .form-group { margin-bottom: 15px; }
-        input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 16px; }
-        input:focus { outline: none; border-color: var(--primary); }
-
-        .btn {
-            width: 100%; padding: 15px; background: var(--primary); color: white; border: none;
-            border-radius: 10px; font-size: 18px; cursor: pointer; transition: 0.3s; margin-top: 10px;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
-        .btn:hover { background: #0d1c5c; transform: translateY(-2px); }
-
-        .member-card {
-            background: #fff; padding: 20px; border-radius: 12px; margin-bottom: 15px;
-            border-right: 5px solid var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        .link-display {
-            background: #f8fff9; padding: 10px; border-radius: 8px; border: 1px dashed #27ae60;
-            display: block; margin-top: 10px; font-size: 0.9rem; color: #27ae60; word-break: break-all;
-        }
-
-        .notification {
-            position: fixed; bottom: 20px; left: 20px; background: white; padding: 15px 25px;
-            border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border-right: 4px solid var(--accent);
-            z-index: 1000; transition: 0.5s;
-        }
-        .hidden { display: none; }
-        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; display: inline-block; margin-left: 10px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
         
-        .error { color: #b21f1f; text-align: center; padding: 10px; background: #fff2f2; border-radius: 8px; margin: 10px 0; }
-        .success { color: #27ae60; text-align: center; padding: 10px; background: #f0fff4; border-radius: 8px; margin: 10px 0; }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
 </head>
-<body>
+<body class="fade-in">
+    <!-- العلامة المائية -->
+    <div style="position: fixed; bottom: 10px; left: 10px; color: rgba(255,255,255,0.3); font-size: 12px;">
+        مكتب النائب أحمد الحديدي © 2024
+    </div>
 
-    <div class="header">
-        <i class="fas fa-landmark" style="font-size: 2.5rem; margin-bottom: 10px;"></i>
+    <div class="header floating">
+        <div class="logo">
+            <i class="fas fa-landmark"></i>
+        </div>
         <h1>لوحة التحكم - مكتب النائب أحمد الحديدي</h1>
-        <p>نظام إدارة الأعضاء وتوليد روابط التحقق</p>
+        <p>نظام إدارة الأعضاء وتوليد روابط التحقق الآمنة</p>
+        <div style="margin-top: 15px; font-size: 0.9rem; opacity: 0.9;">
+            <i class="fas fa-shield-alt"></i> نظام آمن ومشفّر
+        </div>
     </div>
 
     <div class="container">
         <!-- تسجيل الدخول -->
         <div id="login-section" class="card">
             <h2><i class="fas fa-lock"></i> دخول المسؤول</h2>
+            <p style="color: #666; margin-bottom: 20px; text-align: center;">
+                <i class="fas fa-info-circle"></i> الرجاء إدخال كلمة المرور للوصول إلى لوحة التحكم
+            </p>
+            
             <div class="form-group">
-                <input type="password" id="adminPass" placeholder="أدخل كلمة السر">
+                <label for="adminPass"><i class="fas fa-key"></i> كلمة المرور</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="adminPass" placeholder="أدخل كلمة المرور الخاصة بك">
+                </div>
             </div>
+            
             <button class="btn" id="loginBtn">
                 <span id="loginBtnText"><i class="fas fa-sign-in-alt"></i> دخول</span>
+                <span id="loginBtnSpinner" class="hidden"><span class="spinner"></span> جاري التحقق...</span>
             </button>
+            
             <div id="loginStatus" class="hidden"></div>
+            
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
+                <small style="color: #888;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    هذا النظام مخصص للمسؤولين فقط
+                </small>
+            </div>
         </div>
 
-        <!-- الإدارة -->
+        <!-- قسم الإدارة -->
         <div id="admin-section" class="card" style="display:none;">
             <h2><i class="fas fa-user-plus"></i> إضافة عضو جديد</h2>
+            
             <div class="form-group">
-                <input type="text" id="name" placeholder="الاسم الرباعي">
+                <label for="name"><i class="fas fa-user"></i> الاسم الرباعي</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="name" placeholder="أدخل الاسم الرباعي للعضو">
+                </div>
             </div>
+            
             <div class="form-group">
-                <input type="text" id="nationalId" placeholder="الرقم القومي">
+                <label for="nationalId"><i class="fas fa-id-card"></i> الرقم القومي</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-id-card"></i>
+                    <input type="text" id="nationalId" placeholder="أدخل الرقم القومي (14 رقم)" maxlength="14">
+                </div>
+                <small style="color: #888; display: block; margin-top: 5px;">
+                    <i class="fas fa-info-circle"></i> يجب أن يتكون الرقم القومي من 14 رقمًا
+                </small>
             </div>
+            
             <div class="form-group">
-                <input type="text" id="address" placeholder="محل الإقامة (اختياري)">
+                <label for="address"><i class="fas fa-map-marker-alt"></i> محل الإقامة</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" id="address" placeholder="أدخل عنوان السكن (اختياري)">
+                </div>
             </div>
-            <button class="btn" id="addBtn">
-                <span id="btnText"><i class="fas fa-save"></i> حفظ البيانات</span>
+            
+            <button class="btn btn-success" id="addBtn">
+                <span id="btnText"><i class="fas fa-save"></i> حفظ البيانات وتوليد الرابط</span>
                 <span id="btnSpinner" class="hidden"><span class="spinner"></span> جاري الحفظ...</span>
             </button>
             
-            <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+            <div id="addStatus" class="hidden"></div>
             
-            <h3><i class="fas fa-users"></i> الأعضاء المسجلون</h3>
+            <hr style="margin: 40px 0; border: 0; border-top: 2px dashed #eee;">
+            
+            <h2><i class="fas fa-users"></i> الأعضاء المسجلون</h2>
             <div id="membersList" style="margin-top: 20px;">
-                <p style="text-align:center;color:#666;">سيتم تحميل البيانات بعد تسجيل الدخول...</p>
+                <!-- سيتم تحميل الأعضاء هنا -->
             </div>
             
-            <button class="btn" id="logoutBtn" style="background: #666; margin-top: 20px;">
+            <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+                <h3><i class="fas fa-chart-line"></i> إحصائيات</h3>
+                <div id="stats" style="display: flex; justify-content: space-around; text-align: center; margin-top: 15px;">
+                    <div>
+                        <div style="font-size: 2rem; color: var(--primary); font-weight: bold;">0</div>
+                        <small style="color: #666;">إجمالي الأعضاء</small>
+                    </div>
+                    <div>
+                        <div style="font-size: 2rem; color: var(--accent); font-weight: bold;">0</div>
+                        <small style="color: #666;">تمت إضافتهم اليوم</small>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-danger" id="logoutBtn" style="margin-top: 30px;">
                 <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
             </button>
         </div>
     </div>
 
+    <!-- الإشعارات -->
     <div id="notification" class="notification hidden"></div>
 
-    <!-- استيراد الملف الخارجي -->
-    <script type="module" src="script.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <!-- التطبيق الرئيسي -->
+    <script src="script.js"></script>
+    
+    <script>
+        // إضافة التأثيرات الديناميكية
+        document.addEventListener('DOMContentLoaded', function() {
+            // تحديث الإحصائيات عند تسجيل الدخول
+            function updateStats() {
+                const memberCards = document.querySelectorAll('.member-card');
+                const today = new Date().toISOString().split('T')[0];
+                let todayCount = 0;
+                
+                memberCards.forEach(card => {
+                    const dateText = card.querySelector('small')?.textContent;
+                    if (dateText && dateText.includes(today.substring(0, 10))) {
+                        todayCount++;
+                    }
+                });
+                
+                const stats = document.getElementById('stats');
+                if (stats) {
+                    stats.innerHTML = `
+                        <div>
+                            <div style="font-size: 2rem; color: var(--primary); font-weight: bold;">${memberCards.length}</div>
+                            <small style="color: #666;">إجمالي الأعضاء</small>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; color: var(--accent); font-weight: bold;">${todayCount}</div>
+                            <small style="color: #666;">تمت إضافتهم اليوم</small>
+                        </div>
+                    `;
+                }
+            }
+            
+            // تحديث الإحصائيات عند تحميل الأعضاء
+            const originalLoadMembers = window.loadMembers;
+            window.loadMembers = async function() {
+                await originalLoadMembers?.();
+                updateStats();
+            };
+        });
+    </script>
 </body>
 </html>
