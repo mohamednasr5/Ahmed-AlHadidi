@@ -16,3 +16,4 @@ if (!firebase.apps.length) {
 // تصدير كائنات Firebase
 window.db = firebase.firestore();
 window.auth = firebase.auth();
+//
