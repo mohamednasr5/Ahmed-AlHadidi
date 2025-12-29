@@ -2,7 +2,7 @@
 const firebaseConfig = {
     apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs",
     authDomain: "verify-39eda.firebaseapp.com",
-    databaseURL: "https://verify-39eda-default-rtdb.firebaseio.com", // مهم جداً
+    databaseURL: "https://verify-39eda-default-rtdb.firebaseio.com",
     projectId: "verify-39eda",
     storageBucket: "verify-39eda.firebasestorage.app",
     messagingSenderId: "36549490854",
