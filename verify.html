@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com;">
     <title>التحقق من العضوية - مكتب النائب أحمد الحديدي</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -144,11 +145,11 @@
 
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="firebase-config.js"></script>
 
     <script>
-        let db = null;
+        let database = null;
 
         // انتظار تحميل Firebase
         function waitForFirebase() {
@@ -159,9 +160,9 @@
                 const checkFirebase = setInterval(() => {
                     attempts++;
                     
-                    if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+                    if (typeof firebase !== 'undefined' && firebase.apps.length > 0 && window.database) {
                         clearInterval(checkFirebase);
-                        db = firebase.firestore();
+                        database = window.database;
                         console.log('✅ Firebase جاهز');
                         resolve();
                     } else if (attempts >= maxAttempts) {
@@ -189,11 +190,11 @@
 
                 console.log('🔍 البحث عن العضو:', memberId);
 
-                // البحث في قاعدة البيانات
-                const doc = await db.collection('members').doc(memberId).get();
+                // البحث في Realtime Database
+                const snapshot = await database.ref('members/' + memberId).once('value');
 
-                if (doc.exists) {
-                    const memberData = doc.data();
+                if (snapshot.exists()) {
+                    const memberData = snapshot.val();
                     showSuccess(memberData, memberId);
                 } else {
                     showError('لم يتم العثور على بيانات العضوية');
