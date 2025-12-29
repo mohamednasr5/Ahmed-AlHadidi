@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com;">
     <title>لوحة التحكم - مكتب النائب أحمد الحديدي</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -124,11 +125,11 @@
 
     <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="firebase-config.js"></script>
 
     <script>
-        let db = null;
+        let database = null;
 
         // انتظار تحميل Firebase
         function waitForFirebase() {
@@ -139,9 +140,9 @@
                 const checkFirebase = setInterval(() => {
                     attempts++;
                     
-                    if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+                    if (typeof firebase !== 'undefined' && firebase.apps.length > 0 && window.database) {
                         clearInterval(checkFirebase);
-                        db = firebase.firestore();
+                        database = window.database;
                         console.log('✅ Firebase جاهز');
                         resolve();
                     } else if (attempts >= maxAttempts) {
@@ -157,11 +158,14 @@
             try {
                 await waitForFirebase();
 
-                const snapshot = await db.collection('members').get();
+                const snapshot = await database.ref('members').once('value');
                 const members = [];
                 
-                snapshot.forEach(doc => {
-                    members.push({ id: doc.id, ...doc.data() });
+                snapshot.forEach((childSnapshot) => {
+                    members.push({ 
+                        id: childSnapshot.key, 
+                        ...childSnapshot.val() 
+                    });
                 });
 
                 // حساب الإحصائيات
@@ -181,7 +185,7 @@
                 animateCounter('active-members', activeMembers);
 
                 // عرض آخر الأعضاء
-                displayRecentMembers(members.slice(0, 5));
+                displayRecentMembers(members.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5));
 
                 // عرض الإحصائيات الشهرية
                 displayMonthlyStats(members);
@@ -289,11 +293,11 @@
         // تصدير البيانات
         async function exportData() {
             try {
-                const snapshot = await db.collection('members').get();
+                const snapshot = await database.ref('members').once('value');
                 const members = [];
                 
-                snapshot.forEach(doc => {
-                    const data = doc.data();
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
                     members.push({
                         'الاسم': data.name,
                         'الرقم القومي': data.nationalId,
