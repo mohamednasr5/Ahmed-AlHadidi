@@ -130,7 +130,6 @@
     <script>
         let database = null;
 
-        // انتظار تحميل Firebase
         function waitForFirebase() {
             return new Promise((resolve, reject) => {
                 let attempts = 0;
@@ -152,7 +151,6 @@
             });
         }
 
-        // تحميل البيانات
         async function loadDashboard() {
             try {
                 await waitForFirebase();
@@ -167,7 +165,6 @@
                     });
                 });
 
-                // حساب الإحصائيات
                 const now = new Date();
                 const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -177,16 +174,12 @@
                 const monthMembers = members.filter(m => new Date(m.timestamp) >= monthStart).length;
                 const activeMembers = members.filter(m => m.status === 'active' || !m.status).length;
 
-                // تحديث البطاقات
                 animateCounter('total-members', totalMembers);
                 animateCounter('today-members', todayMembers);
                 animateCounter('month-members', monthMembers);
                 animateCounter('active-members', activeMembers);
 
-                // عرض آخر الأعضاء
                 displayRecentMembers(members.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5));
-
-                // عرض الإحصائيات الشهرية
                 displayMonthlyStats(members);
 
             } catch (error) {
@@ -195,7 +188,6 @@
             }
         }
 
-        // تحريك العداد
         function animateCounter(elementId, target) {
             const element = document.getElementById(elementId);
             let current = 0;
@@ -211,7 +203,6 @@
             }, 20);
         }
 
-        // عرض آخر الأعضاء
         function displayRecentMembers(members) {
             const container = document.getElementById('recent-members');
             
@@ -246,11 +237,9 @@
             container.innerHTML = html;
         }
 
-        // عرض الإحصائيات الشهرية
         function displayMonthlyStats(members) {
             const container = document.getElementById('monthly-stats');
             
-            // حساب الأعضاء لكل شهر في آخر 6 أشهر
             const monthsData = {};
             const now = new Date();
             
@@ -268,7 +257,6 @@
                 }
             });
 
-            // عرض البيانات
             let html = '<div style="display: flex; align-items: flex-end; justify-content: space-around; height: 250px; border-bottom: 2px solid #e0e0e0; padding: 20px 0;">';
             
             const maxValue = Math.max(...Object.values(monthsData), 1);
@@ -280,7 +268,7 @@
                         <div style="background: var(--gradient-success); width: 60px; height: ${height}px; margin: 0 auto; border-radius: 8px 8px 0 0; position: relative; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
                             <span style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-weight: bold; color: var(--primary);">${count}</span>
                         </div>
-                        <p style="font-size: 0.75rem; margin-top: 10px; color: #666; writing-mode: horizontal-tb;">${month.split(' ')[0]}</p>
+                        <p style="font-size: 0.75rem; margin-top: 10px; color: #666;">${month.split(' ')[0]}</p>
                     </div>
                 `;
             });
@@ -289,7 +277,6 @@
             container.innerHTML = html;
         }
 
-        // تصدير البيانات
         async function exportData() {
             try {
                 const snapshot = await database.ref('members').once('value');
@@ -305,12 +292,10 @@
                     });
                 });
 
-                // تحويل إلى CSV
                 const headers = Object.keys(members[0]).join(',');
                 const rows = members.map(m => Object.values(m).join(','));
                 const csv = [headers, ...rows].join('\n');
 
-                // تنزيل الملف
                 const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
@@ -324,7 +309,6 @@
             }
         }
 
-        // تنسيق التاريخ
         function formatDate(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString('ar-EG', {
@@ -334,7 +318,6 @@
             });
         }
 
-        // إظهار الإشعارات
         function showNotification(message, type = 'info') {
             const notification = document.getElementById('notification');
             if (!notification) return;
@@ -357,7 +340,6 @@
             }, 5000);
         }
 
-        // بدء التحميل
         document.addEventListener('DOMContentLoaded', loadDashboard);
     </script>
 
