@@ -3,17 +3,21 @@ const ADMIN_PASSWORD = "Ahmed123";
 
 // حالة التطبيق
 let currentUser = null;
+let db = null;
 
-// تهيئة التطبيق
+// انتظار تحميل DOM
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('📄 DOM محمّل');
     initApp();
 });
 
-// تهيئة Firebase والتطبيق
+// تهيئة التطبيق
 async function initApp() {
     try {
-        // استيراد Firebase بشكل ديناميكي
-        await loadFirebase();
+        console.log('🚀 بدء تهيئة التطبيق...');
+        
+        // انتظار تحميل Firebase
+        await waitForFirebase();
         
         // التحقق من جلسة مسجل الدخول
         checkAuthState();
@@ -21,37 +25,32 @@ async function initApp() {
         // إعداد المستمعين للأحداث
         setupEventListeners();
         
+        console.log('✅ تم تهيئة التطبيق بنجاح');
     } catch (error) {
-        console.error('خطأ في تهيئة التطبيق:', error);
+        console.error('❌ خطأ في تهيئة التطبيق:', error);
         showNotification('خطأ في تحميل النظام', 'error');
     }
 }
 
-// تحميل Firebase ديناميكياً
-async function loadFirebase() {
-    if (typeof firebase === 'undefined') {
-        const script = document.createElement('script');
-        script.src = 'https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js';
-        script.type = 'module';
-        await loadScript(script);
-        
-        const authScript = document.createElement('script');
-        authScript.src = 'https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js';
-        authScript.type = 'module';
-        await loadScript(authScript);
-        
-        const firestoreScript = document.createElement('script');
-        firestoreScript.src = 'https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js';
-        firestoreScript.type = 'module';
-        await loadScript(firestoreScript);
-    }
-}
-
-function loadScript(script) {
+// انتظار تحميل Firebase
+function waitForFirebase() {
     return new Promise((resolve, reject) => {
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
+        let attempts = 0;
+        const maxAttempts = 50;
+        
+        const checkFirebase = setInterval(() => {
+            attempts++;
+            
+            if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+                clearInterval(checkFirebase);
+                db = firebase.firestore();
+                console.log('✅ Firebase جاهز');
+                resolve();
+            } else if (attempts >= maxAttempts) {
+                clearInterval(checkFirebase);
+                reject(new Error('فشل تحميل Firebase'));
+            }
+        }, 100);
     });
 }
 
@@ -59,6 +58,7 @@ function loadScript(script) {
 function checkAuthState() {
     const savedLogin = localStorage.getItem('adminLoggedIn');
     if (savedLogin === 'true') {
+        console.log('👤 المستخدم مسجل دخول');
         showAdminSection();
         loadMembers();
     }
@@ -70,31 +70,31 @@ function setupEventListeners() {
     const loginBtn = document.getElementById('loginBtn');
     if (loginBtn) {
         loginBtn.addEventListener('click', handleLogin);
-        
-        // السماح بالدخول بالزر Enter
-        const adminPassInput = document.getElementById('adminPass');
-        if (adminPassInput) {
-            adminPassInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleLogin();
-            });
-        }
     }
-    
-    // إضافة عضو - هنا التصحيح
+
+    // السماح بالدخول بالزر Enter
+    const adminPassInput = document.getElementById('adminPass');
+    if (adminPassInput) {
+        adminPassInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+    }
+
+    // إضافة عضو
     const addBtn = document.getElementById('addBtn');
     if (addBtn) {
         addBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // منع السلوك الافتراضي
+            e.preventDefault();
             addMember();
         });
     }
-    
+
     // تسجيل الخروج
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', handleLogout);
     }
-    
+
     // نسخ الروابط
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('copy-link')) {
@@ -117,11 +117,12 @@ function handleLogin(e) {
         showError(loginStatus, 'الرجاء إدخال كلمة المرور');
         return;
     }
-    
+
     // إظهار حالة التحميل
     loginBtn.classList.add('loading');
+    loginBtn.disabled = true;
     loginBtnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
-    
+
     // محاكاة تأخير للواقعية
     setTimeout(() => {
         if (password === ADMIN_PASSWORD) {
@@ -138,8 +139,10 @@ function handleLogin(e) {
             showNotification('تم تسجيل الدخول بنجاح', 'success');
             
             // إخفاء قسم تسجيل الدخول
-            document.getElementById('login-section').style.display = 'none';
-            
+            const loginSection = document.getElementById('login-section');
+            if (loginSection) {
+                loginSection.style.display = 'none';
+            }
         } else {
             showError(loginStatus, 'كلمة المرور غير صحيحة');
             
@@ -147,14 +150,14 @@ function handleLogin(e) {
             loginBtn.style.animation = 'shake 0.5s';
             setTimeout(() => loginBtn.style.animation = '', 500);
         }
-        
+
         // إعادة حالة الزر
         loginBtn.classList.remove('loading');
+        loginBtn.disabled = false;
         loginBtnText.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
         
         // مسح كلمة المرور
         document.getElementById('adminPass').value = '';
-        
     }, 1000);
 }
 
@@ -166,81 +169,78 @@ function showAdminSection() {
     }
 }
 
-// إضافة عضو جديد - هنا التصحيح الرئيسي
+// إضافة عضو جديد
 async function addMember() {
-    // حذف e من هنا لأنه لم يعد باراميتر
     const name = document.getElementById('name').value.trim();
     const nationalId = document.getElementById('nationalId').value.trim();
     const address = document.getElementById('address').value.trim();
     const btnText = document.getElementById('btnText');
     const btnSpinner = document.getElementById('btnSpinner');
-    
+    const addBtn = document.getElementById('addBtn');
+
     // التحقق من المدخلات
     if (!name || !nationalId) {
         showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
         return;
     }
-    
+
     // التحقق من صحة الرقم القومي
     if (!/^\d{14}$/.test(nationalId)) {
         showNotification('الرجاء إدخال رقم قومي صحيح (14 رقم)', 'error');
         return;
     }
-    
+
+    // التحقق من التكرار
+    try {
+        const existingMember = await db.collection('members')
+            .where('nationalId', '==', nationalId)
+            .get();
+        
+        if (!existingMember.empty) {
+            showNotification('هذا الرقم القومي مسجل بالفعل', 'error');
+            return;
+        }
+    } catch (error) {
+        console.error('خطأ في التحقق من التكرار:', error);
+    }
+
     try {
         // إظهار حالة التحميل
         btnText.classList.add('hidden');
         btnSpinner.classList.remove('hidden');
-        
+        addBtn.disabled = true;
+
         // إنشاء معرف فريد للعضو
         const memberId = generateMemberId();
-        
+
         // بيانات العضو
         const memberData = {
             name,
             nationalId,
             address: address || 'غير محدد',
             timestamp: new Date().toISOString(),
-            verificationLink: `${window.location.origin}/verify.html?id=${memberId}`
+            verificationLink: `${window.location.origin}${window.location.pathname.replace(/\/[^\/]*$/, '')}/verify.html?id=${memberId}`,
+            addedBy: 'admin',
+            status: 'active'
         };
-        
+
         // حفظ في Firebase
         await db.collection('members').doc(memberId).set(memberData);
-        
+
         // إظهار رسالة النجاح
-        showNotification('تم إضافة العضو بنجاح', 'success');
-        
+        showNotification('تم إضافة العضو بنجاح ✓', 'success');
+
         // تحديث قائمة الأعضاء
         await loadMembers();
-        
+
         // مسح الحقول
         document.getElementById('name').value = '';
         document.getElementById('nationalId').value = '';
         document.getElementById('address').value = '';
-        
+
         // إظهار الرابط
-        const linkElement = document.createElement('div');
-        linkElement.className = 'link-display';
-        linkElement.innerHTML = `
-            <i class="fas fa-link"></i> رابط التحقق:
-            <br>
-            ${memberData.verificationLink}
-            <button class="copy-link btn btn-success" style="margin-top: 10px; padding: 8px 15px; font-size: 14px;" 
-                    data-link="${memberData.verificationLink}">
-                <i class="fas fa-copy"></i> نسخ الرابط
-            </button>
-        `;
-        
-        // إضافة الرابط مؤقتاً
-        document.getElementById('addBtn').parentNode.insertBefore(linkElement, document.getElementById('addBtn').nextSibling);
-        
-        // إخفاء الرابط بعد 10 ثواني
-        setTimeout(() => {
-            if (linkElement.parentNode) {
-                linkElement.remove();
-            }
-        }, 10000);
-        
+        showVerificationLink(memberData.verificationLink);
+
     } catch (error) {
         console.error('خطأ في إضافة العضو:', error);
         showNotification('حدث خطأ في حفظ البيانات', 'error');
@@ -248,7 +248,35 @@ async function addMember() {
         // إعادة حالة الزر
         btnText.classList.remove('hidden');
         btnSpinner.classList.add('hidden');
+        addBtn.disabled = false;
     }
+}
+
+// إظهار رابط التحقق
+function showVerificationLink(link) {
+    const linkElement = document.createElement('div');
+    linkElement.className = 'link-display';
+    linkElement.innerHTML = `
+        <i class="fas fa-link"></i> رابط التحقق:
+        <div style="margin-top: 8px; background: white; padding: 10px; border-radius: 5px;">
+            <a href="${link}" target="_blank" style="color: #27ae60; word-break: break-all; text-decoration: none; font-size: 0.85rem;">
+                ${link}
+            </a>
+        </div>
+        <button onclick="copyToClipboard('${link}')" style="margin-top: 10px; padding: 8px 15px; background: var(--accent); color: white; border: none; border-radius: 5px; cursor: pointer; width: 100%;">
+            <i class="fas fa-copy"></i> نسخ الرابط
+        </button>
+    `;
+    
+    const addBtn = document.getElementById('addBtn');
+    addBtn.parentNode.insertBefore(linkElement, addBtn.nextSibling);
+    
+    // إخفاء الرابط بعد 30 ثانية
+    setTimeout(() => {
+        if (linkElement.parentNode) {
+            linkElement.remove();
+        }
+    }, 30000);
 }
 
 // توليد معرف فريد للعضو
@@ -262,59 +290,128 @@ function generateMemberId() {
 async function loadMembers() {
     const membersList = document.getElementById('membersList');
     if (!membersList) return;
-    
+
     try {
-        membersList.innerHTML = '<p style="text-align:center;color:#666;"><i class="fas fa-spinner fa-spin"></i> جاري تحميل البيانات...</p>';
-        
+        membersList.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #999;">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p style="margin-top: 15px;">جاري تحميل البيانات...</p>
+            </div>
+        `;
+
         // جلب البيانات من Firebase
         const snapshot = await db.collection('members')
             .orderBy('timestamp', 'desc')
             .get();
-        
+
         if (snapshot.empty) {
-            membersList.innerHTML = '<p style="text-align:center;color:#666;">لا توجد أعضاء مسجلين بعد</p>';
+            membersList.innerHTML = `
+                <div style="text-align: center; padding: 60px; color: #999;">
+                    <i class="fas fa-users fa-3x" style="opacity: 0.3;"></i>
+                    <p style="margin-top: 20px; font-size: 1.1rem;">لا توجد أعضاء مسجلين بعد</p>
+                </div>
+            `;
             return;
         }
-        
+
         // بناء قائمة الأعضاء
         let membersHTML = '';
         snapshot.forEach(doc => {
             const member = doc.data();
+            const memberId = doc.id;
             membersHTML += `
                 <div class="member-card">
                     <div class="member-info">
                         <h4><i class="fas fa-user"></i> ${member.name}</h4>
                         <p><i class="fas fa-id-card"></i> الرقم القومي: ${member.nationalId}</p>
                         <p><i class="fas fa-map-marker-alt"></i> العنوان: ${member.address}</p>
-                        <small style="color:#888;"><i class="fas fa-clock"></i> ${formatDate(member.timestamp)}</small>
+                        <p style="font-size: 0.85rem; color: #999;">
+                            <i class="fas fa-calendar"></i> ${formatDate(member.timestamp)}
+                        </p>
                     </div>
                     <div class="member-actions">
-                        <button class="copy-link btn btn-success" 
-                                data-link="${member.verificationLink}"
-                                style="padding: 8px 15px; font-size: 14px;">
+                        <button class="btn btn-success copy-link" data-link="${member.verificationLink}" style="width: auto; padding: 10px 20px;">
                             <i class="fas fa-copy"></i> نسخ الرابط
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteMember('${memberId}')" style="width: auto; padding: 10px 20px;">
+                            <i class="fas fa-trash"></i> حذف
                         </button>
                     </div>
                 </div>
             `;
         });
-        
+
         membersList.innerHTML = membersHTML;
         
+        // إضافة عداد الأعضاء
+        const count = snapshot.size;
+        const countBadge = document.createElement('div');
+        countBadge.style.cssText = 'background: var(--gradient-success); color: white; padding: 10px 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; font-weight: 600;';
+        countBadge.innerHTML = `<i class="fas fa-users"></i> إجمالي الأعضاء: ${count}`;
+        membersList.insertBefore(countBadge, membersList.firstChild);
+
     } catch (error) {
         console.error('خطأ في تحميل الأعضاء:', error);
-        membersList.innerHTML = '<p style="text-align:center;color:#b21f1f;">حدث خطأ في تحميل البيانات</p>';
+        membersList.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #b21f1f;">
+                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                <p style="margin-top: 15px;">حدث خطأ في تحميل البيانات</p>
+                <button class="btn" onclick="loadMembers()" style="width: auto; margin-top: 15px; padding: 10px 30px;">
+                    <i class="fas fa-redo"></i> إعادة المحاولة
+                </button>
+            </div>
+        `;
+    }
+}
+
+// حذف عضو
+async function deleteMember(memberId) {
+    if (!confirm('هل أنت متأكد من حذف هذا العضو؟')) {
+        return;
+    }
+
+    try {
+        await db.collection('members').doc(memberId).delete();
+        showNotification('تم حذف العضو بنجاح', 'success');
+        await loadMembers();
+    } catch (error) {
+        console.error('خطأ في حذف العضو:', error);
+        showNotification('حدث خطأ في حذف العضو', 'error');
     }
 }
 
 // نسخ النص للحافظة
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        showNotification('تم نسخ الرابط بنجاح', 'success');
-    }).catch(err => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showNotification('تم نسخ الرابط بنجاح ✓', 'success');
+        }).catch(err => {
+            console.error('خطأ في النسخ:', err);
+            fallbackCopyToClipboard(text);
+        });
+    } else {
+        fallbackCopyToClipboard(text);
+    }
+}
+
+// نسخ احتياطي
+function fallbackCopyToClipboard(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        showNotification('تم نسخ الرابط بنجاح ✓', 'success');
+    } catch (err) {
         console.error('خطأ في النسخ:', err);
         showNotification('خطأ في نسخ الرابط', 'error');
-    });
+    }
+    
+    document.body.removeChild(textArea);
 }
 
 // تسجيل الخروج
@@ -323,10 +420,7 @@ function handleLogout(e) {
     
     if (confirm('هل تريد تسجيل الخروج؟')) {
         localStorage.removeItem('adminLoggedIn');
-        document.getElementById('admin-section').style.display = 'none';
-        document.getElementById('login-section').style.display = 'block';
-        document.getElementById('loginStatus').innerHTML = '';
-        showNotification('تم تسجيل الخروج بنجاح', 'success');
+        location.reload();
     }
 }
 
@@ -334,14 +428,20 @@ function handleLogout(e) {
 function showNotification(message, type = 'info') {
     const notification = document.getElementById('notification');
     if (!notification) return;
-    
+
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        info: 'fa-info-circle'
+    };
+
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <i class="fas ${icons[type]}"></i>
         <span>${message}</span>
     `;
     notification.classList.remove('hidden');
-    
+
     // إخفاء الإشعار تلقائياً بعد 5 ثواني
     setTimeout(() => {
         notification.classList.add('hidden');
@@ -353,7 +453,9 @@ function showError(element, message) {
     if (!element) return;
     
     element.className = 'error';
-    element.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+    element.innerHTML = `
+        <i class="fas fa-exclamation-triangle"></i> ${message}
+    `;
     element.classList.remove('hidden');
 }
 
@@ -369,22 +471,13 @@ function formatDate(dateString) {
     });
 }
 
-// التأكد من أن Firebase متاح
-function waitForFirebase() {
-    return new Promise((resolve) => {
-        if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
-            resolve();
-        } else {
-            setTimeout(() => waitForFirebase().then(resolve), 100);
-        }
-    });
-}
-
-// تعريف db بشكل عام
-let db;
-(async function() {
-    await waitForFirebase();
-    if (firebase.apps.length > 0) {
-        db = firebase.firestore();
+// animation shake
+const style = document.createElement('style');
+style.innerHTML = `
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+        20%, 40%, 60%, 80% { transform: translateX(10px); }
     }
-})();
+`;
+document.head.appendChild(style);
