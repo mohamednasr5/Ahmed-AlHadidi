@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكتب النائب أحمد الحديدي - نظام إدارة الأعضاء</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🏛️</div>
+            <h1>مكتب النائب أحمد الحديدي</h1>
+            <p>نظام إدارة وتحقق الأعضاء الإلكتروني</p>
+        </div>
+
+        <!-- Welcome Card -->
+        <div class="card">
+            <h2 style="text-align: center; color: var(--primary); margin-bottom: 20px;">
+                <i class="fas fa-home"></i> مرحباً بك
+            </h2>
+            <p style="text-align: center; color: #666; margin-bottom: 30px; font-size: 1.1rem;">
+                منصة إلكترونية متكاملة لإدارة والتحقق من عضوية مكتب النائب أحمد الحديدي
+            </p>
+
+            <!-- Services Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px;">
+                <!-- Admin Panel -->
+                <a href="admin.html" class="service-card">
+                    <div class="service-icon" style="background: var(--gradient-primary);">
+                        <i class="fas fa-user-shield fa-2x"></i>
+                    </div>
+                    <h3>لوحة الإدارة</h3>
+                    <p>إدارة الأعضاء وإضافة أعضاء جدد</p>
+                </a>
+
+                <!-- Verification -->
+                <a href="verify.html" class="service-card">
+                    <div class="service-icon" style="background: var(--gradient-success);">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                    <h3>التحقق من العضوية</h3>
+                    <p>التحقق من صحة بيانات الأعضاء</p>
+                </a>
+
+                <!-- Dashboard -->
+                <a href="dashboard.html" class="service-card">
+                    <div class="service-icon" style="background: var(--gradient-gold);">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                    <h3>لوحة التحكم</h3>
+                    <p>الإحصائيات والتقارير التفصيلية</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="card">
+            <h3 style="text-align: center; color: var(--primary); margin-bottom: 25px;">
+                <i class="fas fa-star"></i> مميزات النظام
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <div class="feature-item">
+                    <i class="fas fa-lock" style="color: var(--primary); font-size: 2rem;"></i>
+                    <h4>آمن وموثوق</h4>
+                    <p>حماية عالية للبيانات</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-mobile-alt" style="color: var(--accent); font-size: 2rem;"></i>
+                    <h4>متجاوب</h4>
+                    <p>يعمل على جميع الأجهزة</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-bolt" style="color: var(--secondary); font-size: 2rem;"></i>
+                    <h4>سريع</h4>
+                    <p>أداء عالي وسرعة فائقة</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-cloud" style="color: var(--gold); font-size: 2rem;"></i>
+                    <h4>سحابي</h4>
+                    <p>حفظ تلقائي للبيانات</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; color: white; padding: 20px; margin-top: 30px;">
+            <p style="font-size: 0.9rem;">
+                <i class="fas fa-code"></i> تم التطوير بواسطة 
+                <a href="https://github.com/mohamednasr5" target="_blank" style="color: var(--gold); text-decoration: none; font-weight: bold;">
+                    Mohamed Nasr
+                </a>
+            </p>
+            <p style="font-size: 0.85rem; margin-top: 10px; opacity: 0.8;">
+                © 2024 جميع الحقوق محفوظة - مكتب النائب أحمد الحديدي
+            </p>
+        </div>
+    </div>
+
+    <style>
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 2px solid #f0f0f0;
+            display: block;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-color: var(--gold);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+        }
+
+        .service-card h3 {
+            color: var(--primary);
+            margin: 15px 0 10px;
+            font-size: 1.3rem;
+        }
+
+        .service-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .feature-item h4 {
+            margin: 15px 0 8px;
+            color: var(--primary);
+        }
+
+        .feature-item p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</body>
+</html>
