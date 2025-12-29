@@ -1,10 +1,9 @@
-// إعدادات الأمان
+// إعدادات الأمان - كلمة مرور المسؤول
 const ADMIN_PASSWORD = "Ahmed123";
 
 // حالة التطبيق
 let currentUser = null;
-let db = null;
-let firebaseModules = null;
+let database = null;
 
 // انتظار تحميل DOM
 document.addEventListener('DOMContentLoaded', () => {
@@ -42,11 +41,10 @@ function waitForFirebase() {
         const checkFirebase = setInterval(() => {
             attempts++;
             
-            if (window.db && window.firebaseModules) {
+            if (typeof firebase !== 'undefined' && firebase.apps.length > 0 && window.database) {
                 clearInterval(checkFirebase);
-                db = window.db;
-                firebaseModules = window.firebaseModules;
-                console.log('✅ Firebase جاهز');
+                database = window.database;
+                console.log('✅ Firebase Realtime Database جاهز');
                 resolve();
             } else if (attempts >= maxAttempts) {
                 clearInterval(checkFirebase);
@@ -68,11 +66,13 @@ function checkAuthState() {
 
 // إعداد المستمعين للأحداث
 function setupEventListeners() {
+    // تسجيل الدخول
     const loginBtn = document.getElementById('loginBtn');
     if (loginBtn) {
         loginBtn.addEventListener('click', handleLogin);
     }
 
+    // السماح بالدخول بالزر Enter
     const adminPassInput = document.getElementById('adminPass');
     if (adminPassInput) {
         adminPassInput.addEventListener('keypress', (e) => {
@@ -80,6 +80,7 @@ function setupEventListeners() {
         });
     }
 
+    // إضافة عضو
     const addBtn = document.getElementById('addBtn');
     if (addBtn) {
         addBtn.addEventListener('click', function(e) {
@@ -88,11 +89,13 @@ function setupEventListeners() {
         });
     }
 
+    // تسجيل الخروج
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', handleLogout);
     }
 
+    // نسخ الروابط
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('copy-link')) {
             e.preventDefault();
@@ -115,30 +118,45 @@ function handleLogin(e) {
         return;
     }
 
+    // إظهار حالة التحميل
     loginBtn.classList.add('loading');
     loginBtn.disabled = true;
     loginBtnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
 
+    // محاكاة تأخير للواقعية
     setTimeout(() => {
         if (password === ADMIN_PASSWORD) {
+            // حفظ حالة تسجيل الدخول
             localStorage.setItem('adminLoggedIn', 'true');
+            
+            // إظهار قسم الإدارة
             showAdminSection();
+            
+            // تحميل الأعضاء
             loadMembers();
+            
+            // إظهار رسالة نجاح
             showNotification('تم تسجيل الدخول بنجاح', 'success');
             
+            // إخفاء قسم تسجيل الدخول
             const loginSection = document.getElementById('login-section');
             if (loginSection) {
                 loginSection.style.display = 'none';
             }
         } else {
             showError(loginStatus, 'كلمة المرور غير صحيحة');
+            
+            // تأثير اهتزاز
             loginBtn.style.animation = 'shake 0.5s';
             setTimeout(() => loginBtn.style.animation = '', 500);
         }
 
+        // إعادة حالة الزر
         loginBtn.classList.remove('loading');
         loginBtn.disabled = false;
         loginBtnText.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
+        
+        // مسح كلمة المرور
         document.getElementById('adminPass').value = '';
     }, 1000);
 }
@@ -160,23 +178,24 @@ async function addMember() {
     const btnSpinner = document.getElementById('btnSpinner');
     const addBtn = document.getElementById('addBtn');
 
+    // التحقق من المدخلات
     if (!name || !nationalId) {
         showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
         return;
     }
 
+    // التحقق من صحة الرقم القومي
     if (!/^\d{14}$/.test(nationalId)) {
         showNotification('الرجاء إدخال رقم قومي صحيح (14 رقم)', 'error');
         return;
     }
 
+    // التحقق من التكرار
     try {
-        // التحقق من التكرار
-        const membersRef = firebaseModules.collection(db, 'members');
-        const q = firebaseModules.query(membersRef, firebaseModules.where('nationalId', '==', nationalId));
-        const existingMember = await firebaseModules.getDocs(q);
+        const membersRef = database.ref('members');
+        const snapshot = await membersRef.orderByChild('nationalId').equalTo(nationalId).once('value');
         
-        if (!existingMember.empty) {
+        if (snapshot.exists()) {
             showNotification('هذا الرقم القومي مسجل بالفعل', 'error');
             return;
         }
@@ -185,12 +204,15 @@ async function addMember() {
     }
 
     try {
+        // إظهار حالة التحميل
         btnText.classList.add('hidden');
         btnSpinner.classList.remove('hidden');
         addBtn.disabled = true;
 
+        // إنشاء معرف فريد للعضو
         const memberId = generateMemberId();
 
+        // بيانات العضو
         const memberData = {
             name,
             nationalId,
@@ -201,23 +223,28 @@ async function addMember() {
             status: 'active'
         };
 
-        // حفظ في Firebase v9
-        const memberRef = firebaseModules.doc(db, 'members', memberId);
-        await firebaseModules.setDoc(memberRef, memberData);
+        // حفظ في Realtime Database
+        await database.ref('members/' + memberId).set(memberData);
 
+        // إظهار رسالة النجاح
         showNotification('تم إضافة العضو بنجاح ✓', 'success');
+
+        // تحديث قائمة الأعضاء
         await loadMembers();
 
+        // مسح الحقول
         document.getElementById('name').value = '';
         document.getElementById('nationalId').value = '';
         document.getElementById('address').value = '';
 
+        // إظهار الرابط
         showVerificationLink(memberData.verificationLink);
 
     } catch (error) {
         console.error('خطأ في إضافة العضو:', error);
-        showNotification('حدث خطأ في حفظ البيانات', 'error');
+        showNotification('حدث خطأ في حفظ البيانات: ' + error.message, 'error');
     } finally {
+        // إعادة حالة الزر
         btnText.classList.remove('hidden');
         btnSpinner.classList.add('hidden');
         addBtn.disabled = false;
@@ -243,6 +270,7 @@ function showVerificationLink(link) {
     const addBtn = document.getElementById('addBtn');
     addBtn.parentNode.insertBefore(linkElement, addBtn.nextSibling);
     
+    // إخفاء الرابط بعد 30 ثانية
     setTimeout(() => {
         if (linkElement.parentNode) {
             linkElement.remove();
@@ -250,7 +278,7 @@ function showVerificationLink(link) {
     }, 30000);
 }
 
-// توليد معرف فريد
+// توليد معرف فريد للعضو
 function generateMemberId() {
     const timestamp = Date.now().toString(36);
     const random = Math.random().toString(36).substr(2, 9);
@@ -270,11 +298,10 @@ async function loadMembers() {
             </div>
         `;
 
-        const membersRef = firebaseModules.collection(db, 'members');
-        const q = firebaseModules.query(membersRef, firebaseModules.orderBy('timestamp', 'desc'));
-        const snapshot = await firebaseModules.getDocs(q);
+        // جلب البيانات من Realtime Database
+        const snapshot = await database.ref('members').orderByChild('timestamp').once('value');
 
-        if (snapshot.empty) {
+        if (!snapshot.exists()) {
             membersList.innerHTML = `
                 <div style="text-align: center; padding: 60px; color: #999;">
                     <i class="fas fa-users fa-3x" style="opacity: 0.3;"></i>
@@ -284,10 +311,21 @@ async function loadMembers() {
             return;
         }
 
+        // تحويل البيانات إلى مصفوفة وترتيبها
+        const membersArray = [];
+        snapshot.forEach((childSnapshot) => {
+            membersArray.push({
+                id: childSnapshot.key,
+                ...childSnapshot.val()
+            });
+        });
+
+        // ترتيب حسب التاريخ (الأحدث أولاً)
+        membersArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        // بناء قائمة الأعضاء
         let membersHTML = '';
-        snapshot.forEach(doc => {
-            const member = doc.data();
-            const memberId = doc.id;
+        membersArray.forEach(member => {
             membersHTML += `
                 <div class="member-card">
                     <div class="member-info">
@@ -302,7 +340,7 @@ async function loadMembers() {
                         <button class="btn btn-success copy-link" data-link="${member.verificationLink}" style="width: auto; padding: 10px 20px;">
                             <i class="fas fa-copy"></i> نسخ الرابط
                         </button>
-                        <button class="btn btn-danger" onclick="deleteMember('${memberId}')" style="width: auto; padding: 10px 20px;">
+                        <button class="btn btn-danger" onclick="deleteMember('${member.id}')" style="width: auto; padding: 10px 20px;">
                             <i class="fas fa-trash"></i> حذف
                         </button>
                     </div>
@@ -312,7 +350,8 @@ async function loadMembers() {
 
         membersList.innerHTML = membersHTML;
         
-        const count = snapshot.size;
+        // إضافة عداد الأعضاء
+        const count = membersArray.length;
         const countBadge = document.createElement('div');
         countBadge.style.cssText = 'background: var(--gradient-success); color: white; padding: 10px 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; font-weight: 600;';
         countBadge.innerHTML = `<i class="fas fa-users"></i> إجمالي الأعضاء: ${count}`;
@@ -324,6 +363,7 @@ async function loadMembers() {
             <div style="text-align: center; padding: 40px; color: #b21f1f;">
                 <i class="fas fa-exclamation-triangle fa-2x"></i>
                 <p style="margin-top: 15px;">حدث خطأ في تحميل البيانات</p>
+                <p style="font-size: 0.9rem; color: #999;">${error.message}</p>
                 <button class="btn" onclick="loadMembers()" style="width: auto; margin-top: 15px; padding: 10px 30px;">
                     <i class="fas fa-redo"></i> إعادة المحاولة
                 </button>
@@ -339,13 +379,12 @@ async function deleteMember(memberId) {
     }
 
     try {
-        const memberRef = firebaseModules.doc(db, 'members', memberId);
-        await firebaseModules.deleteDoc(memberRef);
+        await database.ref('members/' + memberId).remove();
         showNotification('تم حذف العضو بنجاح', 'success');
         await loadMembers();
     } catch (error) {
         console.error('خطأ في حذف العضو:', error);
-        showNotification('حدث خطأ في حذف العضو', 'error');
+        showNotification('حدث خطأ في حذف العضو: ' + error.message, 'error');
     }
 }
 
@@ -411,6 +450,7 @@ function showNotification(message, type = 'info') {
     `;
     notification.classList.remove('hidden');
 
+    // إخفاء الإشعار تلقائياً بعد 5 ثواني
     setTimeout(() => {
         notification.classList.add('hidden');
     }, 5000);
