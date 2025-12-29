@@ -1,12 +1,8 @@
-// Import the functions you need from the SDKs
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-
 // إعدادات Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyD1ReoAPI53LweugEUbpb7SnD9iJoEPPcs",
     authDomain: "verify-39eda.firebaseapp.com",
+    databaseURL: "https://verify-39eda-default-rtdb.firebaseio.com",
     projectId: "verify-39eda",
     storageBucket: "verify-39eda.firebasestorage.app",
     messagingSenderId: "36549490854",
@@ -14,23 +10,16 @@ const firebaseConfig = {
 };
 
 // تهيئة Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-// تصدير للاستخدام العام
-window.db = db;
-window.auth = auth;
-window.firebaseModules = {
-    collection,
-    doc,
-    setDoc,
-    getDoc,
-    getDocs,
-    deleteDoc,
-    query,
-    orderBy,
-    where
-};
-
-console.log('✅ Firebase v9 تم تهيئته بنجاح');
+try {
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    
+    // تصدير كائنات Firebase بشكل عام
+    window.database = firebase.database();
+    window.auth = firebase.auth();
+    
+    console.log('✅ Firebase Realtime Database تم تهيئته بنجاح');
+} catch (error) {
+    console.error('❌ خطأ في تهيئة Firebase:', error);
+}
