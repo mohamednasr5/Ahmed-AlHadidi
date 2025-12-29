@@ -13,7 +13,8 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-// تصدير كائنات Firebase
+// تصدير كائنات Firebase بشكل عام
 window.db = firebase.firestore();
 window.auth = firebase.auth();
-//
+
+console.log('✅ Firebase تم تهيئته بنجاح');
