@@ -1,9 +1,10 @@
-// إعدادات الأمان - كلمة مرور المسؤول
+// إعدادات الأمان
 const ADMIN_PASSWORD = "Ahmed123";
 
 // حالة التطبيق
 let currentUser = null;
 let db = null;
+let firebaseModules = null;
 
 // انتظار تحميل DOM
 document.addEventListener('DOMContentLoaded', () => {
@@ -41,9 +42,10 @@ function waitForFirebase() {
         const checkFirebase = setInterval(() => {
             attempts++;
             
-            if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+            if (window.db && window.firebaseModules) {
                 clearInterval(checkFirebase);
-                db = firebase.firestore();
+                db = window.db;
+                firebaseModules = window.firebaseModules;
                 console.log('✅ Firebase جاهز');
                 resolve();
             } else if (attempts >= maxAttempts) {
@@ -66,13 +68,11 @@ function checkAuthState() {
 
 // إعداد المستمعين للأحداث
 function setupEventListeners() {
-    // تسجيل الدخول
     const loginBtn = document.getElementById('loginBtn');
     if (loginBtn) {
         loginBtn.addEventListener('click', handleLogin);
     }
 
-    // السماح بالدخول بالزر Enter
     const adminPassInput = document.getElementById('adminPass');
     if (adminPassInput) {
         adminPassInput.addEventListener('keypress', (e) => {
@@ -80,7 +80,6 @@ function setupEventListeners() {
         });
     }
 
-    // إضافة عضو
     const addBtn = document.getElementById('addBtn');
     if (addBtn) {
         addBtn.addEventListener('click', function(e) {
@@ -89,13 +88,11 @@ function setupEventListeners() {
         });
     }
 
-    // تسجيل الخروج
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', handleLogout);
     }
 
-    // نسخ الروابط
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('copy-link')) {
             e.preventDefault();
@@ -118,45 +115,30 @@ function handleLogin(e) {
         return;
     }
 
-    // إظهار حالة التحميل
     loginBtn.classList.add('loading');
     loginBtn.disabled = true;
     loginBtnText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
 
-    // محاكاة تأخير للواقعية
     setTimeout(() => {
         if (password === ADMIN_PASSWORD) {
-            // حفظ حالة تسجيل الدخول
             localStorage.setItem('adminLoggedIn', 'true');
-            
-            // إظهار قسم الإدارة
             showAdminSection();
-            
-            // تحميل الأعضاء
             loadMembers();
-            
-            // إظهار رسالة نجاح
             showNotification('تم تسجيل الدخول بنجاح', 'success');
             
-            // إخفاء قسم تسجيل الدخول
             const loginSection = document.getElementById('login-section');
             if (loginSection) {
                 loginSection.style.display = 'none';
             }
         } else {
             showError(loginStatus, 'كلمة المرور غير صحيحة');
-            
-            // تأثير اهتزاز
             loginBtn.style.animation = 'shake 0.5s';
             setTimeout(() => loginBtn.style.animation = '', 500);
         }
 
-        // إعادة حالة الزر
         loginBtn.classList.remove('loading');
         loginBtn.disabled = false;
         loginBtnText.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
-        
-        // مسح كلمة المرور
         document.getElementById('adminPass').value = '';
     }, 1000);
 }
@@ -178,23 +160,21 @@ async function addMember() {
     const btnSpinner = document.getElementById('btnSpinner');
     const addBtn = document.getElementById('addBtn');
 
-    // التحقق من المدخلات
     if (!name || !nationalId) {
         showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
         return;
     }
 
-    // التحقق من صحة الرقم القومي
     if (!/^\d{14}$/.test(nationalId)) {
         showNotification('الرجاء إدخال رقم قومي صحيح (14 رقم)', 'error');
         return;
     }
 
-    // التحقق من التكرار
     try {
-        const existingMember = await db.collection('members')
-            .where('nationalId', '==', nationalId)
-            .get();
+        // التحقق من التكرار
+        const membersRef = firebaseModules.collection(db, 'members');
+        const q = firebaseModules.query(membersRef, firebaseModules.where('nationalId', '==', nationalId));
+        const existingMember = await firebaseModules.getDocs(q);
         
         if (!existingMember.empty) {
             showNotification('هذا الرقم القومي مسجل بالفعل', 'error');
@@ -205,15 +185,12 @@ async function addMember() {
     }
 
     try {
-        // إظهار حالة التحميل
         btnText.classList.add('hidden');
         btnSpinner.classList.remove('hidden');
         addBtn.disabled = true;
 
-        // إنشاء معرف فريد للعضو
         const memberId = generateMemberId();
 
-        // بيانات العضو
         const memberData = {
             name,
             nationalId,
@@ -224,28 +201,23 @@ async function addMember() {
             status: 'active'
         };
 
-        // حفظ في Firebase
-        await db.collection('members').doc(memberId).set(memberData);
+        // حفظ في Firebase v9
+        const memberRef = firebaseModules.doc(db, 'members', memberId);
+        await firebaseModules.setDoc(memberRef, memberData);
 
-        // إظهار رسالة النجاح
         showNotification('تم إضافة العضو بنجاح ✓', 'success');
-
-        // تحديث قائمة الأعضاء
         await loadMembers();
 
-        // مسح الحقول
         document.getElementById('name').value = '';
         document.getElementById('nationalId').value = '';
         document.getElementById('address').value = '';
 
-        // إظهار الرابط
         showVerificationLink(memberData.verificationLink);
 
     } catch (error) {
         console.error('خطأ في إضافة العضو:', error);
         showNotification('حدث خطأ في حفظ البيانات', 'error');
     } finally {
-        // إعادة حالة الزر
         btnText.classList.remove('hidden');
         btnSpinner.classList.add('hidden');
         addBtn.disabled = false;
@@ -271,7 +243,6 @@ function showVerificationLink(link) {
     const addBtn = document.getElementById('addBtn');
     addBtn.parentNode.insertBefore(linkElement, addBtn.nextSibling);
     
-    // إخفاء الرابط بعد 30 ثانية
     setTimeout(() => {
         if (linkElement.parentNode) {
             linkElement.remove();
@@ -279,7 +250,7 @@ function showVerificationLink(link) {
     }, 30000);
 }
 
-// توليد معرف فريد للعضو
+// توليد معرف فريد
 function generateMemberId() {
     const timestamp = Date.now().toString(36);
     const random = Math.random().toString(36).substr(2, 9);
@@ -299,10 +270,9 @@ async function loadMembers() {
             </div>
         `;
 
-        // جلب البيانات من Firebase
-        const snapshot = await db.collection('members')
-            .orderBy('timestamp', 'desc')
-            .get();
+        const membersRef = firebaseModules.collection(db, 'members');
+        const q = firebaseModules.query(membersRef, firebaseModules.orderBy('timestamp', 'desc'));
+        const snapshot = await firebaseModules.getDocs(q);
 
         if (snapshot.empty) {
             membersList.innerHTML = `
@@ -314,7 +284,6 @@ async function loadMembers() {
             return;
         }
 
-        // بناء قائمة الأعضاء
         let membersHTML = '';
         snapshot.forEach(doc => {
             const member = doc.data();
@@ -343,7 +312,6 @@ async function loadMembers() {
 
         membersList.innerHTML = membersHTML;
         
-        // إضافة عداد الأعضاء
         const count = snapshot.size;
         const countBadge = document.createElement('div');
         countBadge.style.cssText = 'background: var(--gradient-success); color: white; padding: 10px 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; font-weight: 600;';
@@ -371,7 +339,8 @@ async function deleteMember(memberId) {
     }
 
     try {
-        await db.collection('members').doc(memberId).delete();
+        const memberRef = firebaseModules.doc(db, 'members', memberId);
+        await firebaseModules.deleteDoc(memberRef);
         showNotification('تم حذف العضو بنجاح', 'success');
         await loadMembers();
     } catch (error) {
@@ -442,7 +411,6 @@ function showNotification(message, type = 'info') {
     `;
     notification.classList.remove('hidden');
 
-    // إخفاء الإشعار تلقائياً بعد 5 ثواني
     setTimeout(() => {
         notification.classList.add('hidden');
     }, 5000);
@@ -470,14 +438,3 @@ function formatDate(dateString) {
         minute: '2-digit'
     });
 }
-
-// animation shake
-const style = document.createElement('style');
-style.innerHTML = `
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-        20%, 40%, 60%, 80% { transform: translateX(10px); }
-    }
-`;
-document.head.appendChild(style);
