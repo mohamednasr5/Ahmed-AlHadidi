@@ -153,9 +153,6 @@ function handleLogin(e) {
     // محاكاة تأخير للواقعية
     setTimeout(() => {
         console.log('🔐 التحقق من كلمة المرور...');
-        console.log('كلمة المرور الصحيحة:', ADMIN_PASSWORD);
-        console.log('كلمة المرور المدخلة:', password);
-        console.log('متطابقة؟', password === ADMIN_PASSWORD);
         
         if (password === ADMIN_PASSWORD) {
             console.log('✅ كلمة المرور صحيحة!');
@@ -228,9 +225,9 @@ async function addMember() {
         return;
     }
 
-    // التحقق من صحة الرقم القومي
-    if (!/^\d{14}$/.test(nationalId)) {
-        showNotification('الرجاء إدخال رقم قومي صحيح (14 رقم)', 'error');
+    // التحقق من أن الرقم القومي يحتوي على أرقام فقط (بدون قيد على الطول)
+    if (!/^\d+$/.test(nationalId)) {
+        showNotification('الرجاء إدخال رقم قومي صحيح (أرقام فقط)', 'error');
         return;
     }
 
@@ -279,6 +276,7 @@ async function addMember() {
         };
 
         console.log('💾 محاولة الحفظ في Firebase...');
+        console.log('📦 البيانات المرسلة:', memberData);
 
         // حفظ في Realtime Database
         await database.ref('members/' + memberId).set(memberData);
@@ -301,13 +299,20 @@ async function addMember() {
 
     } catch (error) {
         console.error('❌ خطأ في إضافة العضو:', error);
+        console.error('📋 تفاصيل الخطأ:', {
+            code: error.code,
+            message: error.message,
+            details: error
+        });
         
         let errorMessage = 'حدث خطأ في حفظ البيانات';
         if (error.code === 'PERMISSION_DENIED') {
             errorMessage = 'خطأ: لا توجد صلاحيات للكتابة. تحقق من قواعد Firebase';
+        } else if (error.message) {
+            errorMessage = `خطأ: ${error.message}`;
         }
         
-        showNotification(errorMessage + ': ' + error.message, 'error');
+        showNotification(errorMessage, 'error');
     } finally {
         // إعادة حالة الزر
         btnText.classList.remove('hidden');
